@@ -4,6 +4,7 @@
 
 #include "protocol.h"
 #include "flipdot.h"
+#include "flipdot_clock.h"
 #include <string.h>
 
 void protocolMsgCallbackFpdTyp(protocolMsgFpdTyp_t *typ)
@@ -21,14 +22,26 @@ void protocolMsgPollCallbackFpdTyp(void)
 
 void protocolMsgCallbackFpdMod(protocolMsgFpdMod_t *mod)
 {
+	/* Enable PWR and BKP clocks */
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
+
+	/* Allow access to BKP Domain */
+	PWR_BackupAccessCmd(ENABLE);
+
+	/* Write to the BKP Domain */
     BKP_WriteBackupRegister(BKP_DR4, mod->mode & 0xFF);
+
+    /* Deny access to BKP Domain */
+    PWR_BackupAccessCmd(DISABLE);
+
+    flipdotClockMode = mod->mode;
     protocolReplyPacket(PROTOCOL_MSG_ID_FPD_MOD);
 }
 
 void protocolMsgPollCallbackFpdMod(void)
 {
     protocolMsgFpdMod_t mod;
-    mod.mode = (BKP_ReadBackupRegister(BKP_DR4) & 0xFF);
+    mod.mode = flipdotClockMode;
     protocolMsgSendFpdMod(&mod);
 }
 

@@ -71,6 +71,32 @@ bool protocolEvaluatePacket(protocolPacket_t *packet)
         }
         break;
 
+    case PROTOCOL_MSG_ID_FPD_TYP:
+    	if(packet->payloadLength == 0)
+		{
+			protocolMsgPollCallbackFpdTyp();
+		}
+		else
+		{
+			protocolMsgFpdTyp_t msg;
+			memcpy(&msg, packet->payload, sizeof(protocolMsgFpdTyp_t));
+			protocolMsgCallbackFpdTyp(&msg);
+		}
+        break;
+
+    case PROTOCOL_MSG_ID_FPD_MOD:
+    	if(packet->payloadLength == 0)
+		{
+			protocolMsgPollCallbackFpdMod();
+		}
+		else
+		{
+			protocolMsgFpdMod_t msg;
+			memcpy(&msg, packet->payload, sizeof(protocolMsgFpdMod_t));
+			protocolMsgCallbackFpdMod(&msg);
+		}
+		break;
+
     case PROTOCOL_MSG_ID_FPD_R12:
         if(packet->payloadLength == sizeof(protocolMsgFpdR12_t))
         {
@@ -132,6 +158,30 @@ void protocolMsgSendTimSrc(protocolMsgTimSrc_t *msg)
     packet.msgId = PROTOCOL_MSG_ID_TIM_SRC;
     packet.payloadLength = sizeof(protocolMsgTimSrc_t);
     memcpy(packet.payload, msg, sizeof(protocolMsgTimSrc_t));
+    packet.checksum = protocolCalculateChecksum(&packet);
+    protocolSendPacket(&packet);
+}
+
+void protocolMsgSendFpdTyp(protocolMsgFpdTyp_t *msg)
+{
+    protocolPacket_t packet;
+    packet.sync[0] = PROTOCOL_SYNC_0;
+    packet.sync[1] = PROTOCOL_SYNC_1;
+    packet.msgId = PROTOCOL_MSG_ID_FPD_TYP;
+    packet.payloadLength = sizeof(protocolMsgFpdTyp_t);
+    memcpy(packet.payload, msg, sizeof(protocolMsgFpdTyp_t));
+    packet.checksum = protocolCalculateChecksum(&packet);
+    protocolSendPacket(&packet);
+}
+
+void protocolMsgSendFpdMod(protocolMsgFpdMod_t *msg)
+{
+    protocolPacket_t packet;
+    packet.sync[0] = PROTOCOL_SYNC_0;
+    packet.sync[1] = PROTOCOL_SYNC_1;
+    packet.msgId = PROTOCOL_MSG_ID_FPD_MOD;
+    packet.payloadLength = sizeof(protocolMsgFpdMod_t);
+    memcpy(packet.payload, msg, sizeof(protocolMsgFpdMod_t));
     packet.checksum = protocolCalculateChecksum(&packet);
     protocolSendPacket(&packet);
 }

@@ -8,7 +8,6 @@
 
 #include <stddef.h>
 
-#pragma pack(1)
 typedef enum
 {
     fdisp_type_84x7,
