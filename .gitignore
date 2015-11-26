@@ -31,3 +31,5 @@
 # Debug files
 *.dSYM/
 /Debug/
+
+.settings/language.settings.xml
