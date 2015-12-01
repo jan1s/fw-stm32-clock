@@ -23,12 +23,12 @@ void rtcInit()
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5AA)
+    if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5AD)
     {
         /* Backup data register value is not correct or not yet programmed (when
         the first time the program is executed) */
         rtcConfiguration();
-        BKP_WriteBackupRegister(BKP_DR1, 0xA5AA);
+        BKP_WriteBackupRegister(BKP_DR1, 0xA5AD);
     }
     else
     {

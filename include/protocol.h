@@ -10,7 +10,7 @@ extern "C" {
 #define PROTOCOL_SYNC_0 0xB5
 #define PROTOCOL_SYNC_1 0x62
 #define PROTOCOL_HEADER_SIZE 0x06
-#define PROTOCOL_PAYLOAD_SIZE 0xFF
+#define PROTOCOL_PAYLOAD_SIZE 0x5FF
 
 #pragma pack(1)
 typedef struct

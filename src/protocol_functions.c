@@ -72,31 +72,32 @@ bool protocolEvaluatePacket(protocolPacket_t *packet)
         break;
 
     case PROTOCOL_MSG_ID_FPD_TYP:
-    	if(packet->payloadLength == 0)
-		{
-			protocolMsgPollCallbackFpdTyp();
-		}
-		else
-		{
-			protocolMsgFpdTyp_t msg;
-			memcpy(&msg, packet->payload, sizeof(protocolMsgFpdTyp_t));
-			protocolMsgCallbackFpdTyp(&msg);
-		}
+        if(packet->payloadLength == 0)
+        {
+            protocolMsgPollCallbackFpdTyp();
+        }
+        else
+        {
+            protocolMsgFpdTyp_t msg;
+            memcpy(&msg, packet->payload, sizeof(protocolMsgFpdTyp_t));
+            protocolMsgCallbackFpdTyp(&msg);
+        }
         break;
 
     case PROTOCOL_MSG_ID_FPD_MOD:
-    	if(packet->payloadLength == 0)
-		{
-			protocolMsgPollCallbackFpdMod();
-		}
-		else
-		{
-			protocolMsgFpdMod_t msg;
-			memcpy(&msg, packet->payload, sizeof(protocolMsgFpdMod_t));
-			protocolMsgCallbackFpdMod(&msg);
-		}
-		break;
+        if(packet->payloadLength == 0)
+        {
+            protocolMsgPollCallbackFpdMod();
+        }
+        else
+        {
+            protocolMsgFpdMod_t msg;
+            memcpy(&msg, packet->payload, sizeof(protocolMsgFpdMod_t));
+            protocolMsgCallbackFpdMod(&msg);
+        }
+        break;
 
+#ifdef CFG_TYPE_FLIPDOT_84X7
     case PROTOCOL_MSG_ID_FPD_R12:
         if(packet->payloadLength == sizeof(protocolMsgFpdR12_t))
         {
@@ -105,6 +106,18 @@ bool protocolEvaluatePacket(protocolPacket_t *packet)
             protocolMsgCallbackFpdR12(&msg);
         }
         break;
+#endif // CFG_TYPE_FLIPDOT_84X7
+
+#ifdef CFG_TYPE_FLIPDOT_112X16
+    case PROTOCOL_MSG_ID_FPD_R16:
+        if(packet->payloadLength == sizeof(protocolMsgFpdR16_t))
+        {
+            protocolMsgFpdR16_t msg;
+            memcpy(&msg, packet->payload, sizeof(protocolMsgFpdR16_t));
+            protocolMsgCallbackFpdR16(&msg);
+        }
+        break;
+#endif // CFG_TYPE_FLIPDOT_112X6
 
     default:
         return false;

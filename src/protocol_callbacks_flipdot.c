@@ -22,13 +22,13 @@ void protocolMsgPollCallbackFpdTyp(void)
 
 void protocolMsgCallbackFpdMod(protocolMsgFpdMod_t *mod)
 {
-	/* Enable PWR and BKP clocks */
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
+    /* Enable PWR and BKP clocks */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
 
-	/* Allow access to BKP Domain */
-	PWR_BackupAccessCmd(ENABLE);
+    /* Allow access to BKP Domain */
+    PWR_BackupAccessCmd(ENABLE);
 
-	/* Write to the BKP Domain */
+    /* Write to the BKP Domain */
     BKP_WriteBackupRegister(BKP_DR4, mod->mode & 0xFF);
 
     /* Deny access to BKP Domain */
@@ -45,6 +45,7 @@ void protocolMsgPollCallbackFpdMod(void)
     protocolMsgSendFpdMod(&mod);
 }
 
+#ifdef CFG_TYPE_FLIPDOT_84X7
 void protocolMsgCallbackFpdTst(protocolMsgFpdTst_t *tst)
 {
     if(tst->test == 42)
@@ -55,7 +56,6 @@ void protocolMsgCallbackFpdTst(protocolMsgFpdTst_t *tst)
     protocolReplyPacket(PROTOCOL_MSG_ID_FPD_TST);
 }
 
-#ifdef CFG_TYPE_FLIPDOT_84X7
 void protocolMsgCallbackFpdR12(protocolMsgFpdR12_t *r12)
 {
     fdisp_84x7_t d;
@@ -66,11 +66,21 @@ void protocolMsgCallbackFpdR12(protocolMsgFpdR12_t *r12)
 #endif
 
 #ifdef CFG_TYPE_FLIPDOT_112X16
+void protocolMsgCallbackFpdTst(protocolMsgFpdTst_t *tst)
+{
+    if(tst->test == 42)
+    {
+        flipdot_wipe_112x16(0);
+        flipdot_wipe_112x16(1);
+    }
+    protocolReplyPacket(PROTOCOL_MSG_ID_FPD_TST);
+}
+
 void protocolMsgCallbackFpdR16(protocolMsgFpdR16_t *r16)
 {
     fdisp_112x16_t d;
     memcpy(&d, r16, sizeof(fdisp_112x16_t));
-    //flipdot_set_112x16(&d);
+    flipdot_set_112x16(&d);
     protocolReplyPacket(PROTOCOL_MSG_ID_FPD_R16);
 }
 #endif

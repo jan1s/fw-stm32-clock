@@ -7,13 +7,11 @@
 #ifdef CFG_TYPE_FLIPDOT
 
 #include "flipdot.h"
-
+#include "timer.h"
 #include <string.h>
 
 #define CFG_FLIPPER_SREN_PIN                 (1)
 #define CFG_FLIPPER_SRLA_PIN                 (0)
-
-fdisp_type_t flipdotType;
 
 void flipdot_flip(uint8_t row, uint8_t col, uint8_t dir);
 
@@ -145,7 +143,7 @@ void  flipdot_flip(uint8_t row, uint8_t col, uint8_t dir)
 {
     uint8_t buf[3] = {0x00, 0x00, 0x00};
 
-    row = row + 1;
+    row = row + (row / 7) + 1;
     col = col + (col / 7) + 1;
 
     buf[2] |= row & 0b00011111;
@@ -162,7 +160,7 @@ void  flipdot_flip(uint8_t row, uint8_t col, uint8_t dir)
         buf[1] |= 0b00100000;
     }
 
-    for(uint32_t i = 0; i < 32; ++i)
+    for(uint32_t i = 0; i < 16; ++i)
     {
         uint8_t sel = (col & 0b11100000) >> 5;
         if(sel == 0)
@@ -191,10 +189,9 @@ void  flipdot_flip(uint8_t row, uint8_t col, uint8_t dir)
         SPI_I2S_SendData(SPI1, buf[2]);
         while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
 
-        timer_sleep(1);
         GPIO_SetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << CFG_FLIPPER_SRLA_PIN);
-        timer_sleep(1);
         GPIO_ResetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << CFG_FLIPPER_SRLA_PIN);
+
         timer_sleep(1);
 
         if(sel == 0)
@@ -222,10 +219,9 @@ void  flipdot_flip(uint8_t row, uint8_t col, uint8_t dir)
         SPI_I2S_SendData(SPI1, buf[2]);
         while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
 
-        timer_sleep(1);
         GPIO_SetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << CFG_FLIPPER_SRLA_PIN);
-        timer_sleep(1);
         GPIO_ResetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << CFG_FLIPPER_SRLA_PIN);
+
         timer_sleep(1);
     }
 }

@@ -1,20 +1,10 @@
 #ifndef FLIPDOT_H_
 #define FLIPDOT_H_
 
-#ifdef CFG_TYPE_FLIPDOT
-
-#include "stm32f10x.h"
-#include "timer.h"
-
+#include "platform_config.h"
 #include <stddef.h>
 
-typedef enum
-{
-    fdisp_type_84x7,
-    fdisp_type_112x16,
-} fdisp_type_t;
-
-extern fdisp_type_t flipdotType;
+#ifdef CFG_TYPE_FLIPDOT
 
 #ifdef CFG_TYPE_FLIPDOT_84X7
 typedef struct
@@ -49,6 +39,7 @@ void flipdot_setstring_84x7(fdisp_84x7_t *d, uint8_t *s, size_t slen);
 #ifdef CFG_TYPE_FLIPDOT_112X16
 void flipdot_wipe_112x16(const uint8_t dir);
 void flipdot_set_112x16(const fdisp_112x16_t *d);
+void flipdot_setstring_112x16(fdisp_112x16_t *d, uint8_t *s, size_t slen);
 #endif
 // ----------------------------------------------------------------------------
 

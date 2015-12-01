@@ -163,6 +163,19 @@ void flipdot_setstring_84x7(fdisp_84x7_t *d, uint8_t *s, size_t slen)
 }
 #endif
 
+#ifdef CFG_TYPE_FLIPDOT_112X16
+void flipdot_setstring_112x16(fdisp_112x16_t *d, uint8_t *s, size_t slen)
+{
+    for(uint8_t i = 0; (i < slen) && (i < 14); ++i)
+    {
+        for(uint8_t col = 0; col < 6; ++col)
+        {
+            d->cols[col + (i * 6)] = font[s[i]][col];
+        }
+    }
+}
+#endif
+
 #endif // CFG_TYPE_FLIPDOT
 
 // ----------------------------------------------------------------------------
