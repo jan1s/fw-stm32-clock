@@ -3,6 +3,7 @@
 #include "stm32f10x_usart.h"
 
 #include "protocol.h"
+#include "timer.h"
 #include <string.h>
 
 typedef enum
@@ -94,7 +95,14 @@ bool protocolGetPacket(protocolPacket_t *packet)
 {
     static protocolDecoderState_t state;
     static uint16_t length;
+    static timer_ticks_t t;
     bool isWholePacket = false;
+
+    if (timer_delayCount - t > 10000)
+    {
+        length = 0;
+        state = PROTOCOL_DECODER_STATE_SYNC_0;
+    }
 
     while(USART1_Rx_Length > 0)
     {
@@ -111,6 +119,7 @@ bool protocolGetPacket(protocolPacket_t *packet)
         {
         case PROTOCOL_DECODER_STATE_SYNC_0:
             state = (c == PROTOCOL_SYNC_0) ? PROTOCOL_DECODER_STATE_SYNC_1 : PROTOCOL_DECODER_STATE_SYNC_0;
+            t = timer_delayCount;
             break;
 
         case PROTOCOL_DECODER_STATE_SYNC_1:

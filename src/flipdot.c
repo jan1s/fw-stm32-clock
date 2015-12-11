@@ -1,7 +1,3 @@
-//
-//
-//
-//
 #include "platform_config.h"
 
 #ifdef CFG_TYPE_FLIPDOT
@@ -227,5 +223,3 @@ void  flipdot_flip(uint8_t row, uint8_t col, uint8_t dir)
 }
 
 #endif // CFG_TYPE_FLIPDOT
-
-// ----------------------------------------------------------------------------

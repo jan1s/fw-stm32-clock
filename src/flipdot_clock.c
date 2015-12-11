@@ -1,8 +1,3 @@
-//
-//
-//
-//
-
 #include "platform_config.h"
 
 #ifdef CFG_TYPE_FLIPDOT

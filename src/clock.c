@@ -1,8 +1,3 @@
-//
-//
-//
-//
-
 #include "platform_config.h"
 
 #ifdef CFG_TYPE_FLIPDOT
@@ -20,7 +15,6 @@
 
 time_t lastUtc = 0;
 
-// ----------------------------------------------------------------------------
 
 void clockInit()
 {
@@ -33,7 +27,7 @@ void clockInit()
 #endif
 
 #ifdef CFG_TYPE_NIXIE
-    nixie_init();
+    nixieInit();
     nixieClockInit();
 #endif
 }
@@ -52,5 +46,3 @@ void clockPoll()
 #endif
     }
 }
-
-// ----------------------------------------------------------------------------

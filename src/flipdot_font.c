@@ -1,8 +1,3 @@
-//
-//
-//
-//
-
 #include "platform_config.h"
 
 #ifdef CFG_TYPE_FLIPDOT
@@ -177,5 +172,3 @@ void flipdot_setstring_112x16(fdisp_112x16_t *d, uint8_t *s, size_t slen)
 #endif
 
 #endif // CFG_TYPE_FLIPDOT
-
-// ----------------------------------------------------------------------------

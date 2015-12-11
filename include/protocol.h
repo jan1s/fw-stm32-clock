@@ -1,10 +1,7 @@
 #ifndef _PROTOCOL_H_
 #define _PROTOCOL_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "platform_config.h"
 #include <stdbool.h>
 
 #define PROTOCOL_SYNC_0 0xB5
@@ -186,10 +183,5 @@ void protocolMsgCallbackFpdMod(protocolMsgFpdMod_t *msg);
 void protocolMsgCallbackFpdTst(protocolMsgFpdTst_t *msg);
 void protocolMsgCallbackFpdR12(protocolMsgFpdR12_t *msg);
 void protocolMsgCallbackFpdR16(protocolMsgFpdR16_t *msg);
-
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

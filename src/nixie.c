@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include "nixie.h"
+#include "nixie_mapping.h"
 
 
 #define CFG_NIXIE_RCK_PIN       (6)
@@ -11,6 +12,8 @@
 #define CFG_NIXIE_HVEN_PIN      (0)
 
 nixieMapping_t mapping;
+
+void nixieRegisterWrite(uint8_t *buf, size_t length);
 
 void nixieInit()
 {
@@ -61,16 +64,15 @@ void nixieInit()
     /* Enable SPI1 */
     SPI_Cmd(SPI1, ENABLE);
 
-    LPC_GPIO->DIR[CFG_NIXIE_RCK_PORT] |= (1 << CFG_NIXIE_RCK_PIN);
-    LPC_GPIO->DIR[CFG_NIXIE_SCL_PORT] |= (1 << CFG_NIXIE_SCL_PIN);
-    LPC_GPIO->DIR[CFG_NIXIE_SREN_PORT] |= (1 << CFG_NIXIE_SREN_PIN);
-    LPC_GPIO->DIR[CFG_NIXIE_HVEN_PORT] |= (1 << CFG_NIXIE_HVEN_PIN);
+    /* Get Mapping */
+    //mapping = nixieLoadMapping();
+    mapping = NIXIE_MAP_ZM1325;
 
-    nixieGetMapping(&mapping);
+
     nixieHighVoltageEnable();
 }
 
-void nixieSetMapping( const nixieMapping_t m )
+void nixieStoreMapping( const nixieMapping_t m )
 {
     /* Enable PWR and BKP clocks */
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
@@ -85,9 +87,19 @@ void nixieSetMapping( const nixieMapping_t m )
     PWR_BackupAccessCmd(DISABLE);
 }
 
-nixieMapping_t nixieGetMapping()
+nixieMapping_t nixieLoadMapping()
 {
     return (BKP_ReadBackupRegister(BKP_DR4) & 0xFF);
+}
+
+void nixieSetMapping( const nixieMapping_t m )
+{
+    mapping = m;
+}
+
+nixieMapping_t nixieGetMapping( void )
+{
+    return mapping;
 }
 
 #ifdef CFG_TYPE_NIXIE_4T
@@ -97,7 +109,7 @@ void nixieDisplay4t( nixieDisplay4t_t *d )
     uint8_t outBuf[] = {0, 0, 0, 0, 0, 0};
     uint8_t outBufCount = 0;
     uint8_t outBufBitCount = 0;
-    uint8_t outBufBitMask = 0x80;
+    //uint16_t outBufBitMask = 0x100;
 
     //Do thing for each digit
     for(uint8_t digitCount = 0; digitCount < 4; ++digitCount)
@@ -106,10 +118,10 @@ void nixieDisplay4t( nixieDisplay4t_t *d )
         // nicer way would be nice
         if( digitCount == 2)
         {
-            outBuf[outBufCount] |= outBufBitMask;
-            outBufBitMask = outBufBitMask >> 1;
-            outBuf[outBufCount] |= outBufBitMask;
-            outBufBitMask = outBufBitMask >> 1;
+            //outBuf[outBufCount] |= outBufBitMask;
+            //outBufBitMask = outBufBitMask >> 1;
+            //outBuf[outBufCount] |= outBufBitMask;
+            //outBufBitMask = outBufBitMask >> 1;
             outBufBitCount = outBufBitCount + 2;
         }
 
@@ -119,24 +131,24 @@ void nixieDisplay4t( nixieDisplay4t_t *d )
         // iterate over every digit, to be displayed.
         for(uint8_t digit_bit_count = 0; digit_bit_count < 11; ++digit_bit_count)
         {
-            // check if bit should be set
-            if(digitMapping & 0x0200)
-            {
-                outBuf[outBufCount] |= outBufBitMask;
-            }
-
-            // increment checking position
-            digitMapping = digitMapping << 1;
-            outBufBitMask = outBufBitMask >> 1;
-            outBufBitCount++;
-
             // one shift register is full
             if(outBufBitCount >= 8)
             {
                 outBufCount++;
                 outBufBitCount = 0;
-                outBufBitMask = 0x80;
+                //outBufBitMask = 0x100;
             }
+
+            // check if bit should be set
+            if(digitMapping & (0x1 << digit_bit_count))
+            {
+                outBuf[outBufCount] |= (0x1 << outBufBitCount);
+            }
+
+            // increment checking position
+            //digitMapping = digitMapping << 1;
+            //outBufBitMask = outBufBitMask >> 1;
+            outBufBitCount++;
         }
     }
 
@@ -198,19 +210,20 @@ void nixieDisplay6t( nixieDisplay6t_t *d )
 }
 #endif // CFG_TYPE_NIXIE_6T
 
-nixieRegisterWrite(uint8_t *buf, size_t length)
+void nixieRegisterWrite(uint8_t *buf, size_t length)
 {
     // send the whole bitbanana
-    for(uint8_t i = 0; i < length; ++i)
+    for(uint8_t i = length; i > 0; --i)
     {
         while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
-        SPI_I2S_SendData(SPI1, buf[i]);
+        uint8_t data = buf[i - 1];
+        SPI_I2S_SendData(SPI1, data);
     }
     while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
 
     // shift register values to outputs
-    GPIO_ResetBits((GPIO_TypeDef *)GPIOA_BASE, 1 << CFG_NIXIE_RCK_PIN);
     GPIO_SetBits((GPIO_TypeDef *)GPIOA_BASE, 1 << CFG_NIXIE_RCK_PIN);
+    GPIO_ResetBits((GPIO_TypeDef *)GPIOA_BASE, 1 << CFG_NIXIE_RCK_PIN);
 
     // enable the display, if not already happend
     GPIO_ResetBits((GPIO_TypeDef *)GPIOA_BASE, 1 << CFG_NIXIE_SREN_PIN);

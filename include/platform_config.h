@@ -37,13 +37,14 @@
 /* Exported macro ------------------------------------------------------------*/
 
 /* Define the clock type */
-#define CFG_TYPE_FLIPDOT
+//#define CFG_TYPE_FLIPDOT
 //#define CFG_TYPE_FLIPDOT_84X7
-#define CFG_TYPE_FLIPDOT_112X16
+//#define CFG_TYPE_FLIPDOT_112X16
 
-//#define CFG_TYPE_NIXIE
+#define CFG_TYPE_NIXIE
+#define CFG_TYPE_NIXIE_4T
 //#define CFG_TYPE_NIXIE_ZM1000
-//#define CFG_TYPE_NIXIE_ZM1235
+#define CFG_TYPE_NIXIE_ZM1235
 
 /* Exported functions ------------------------------------------------------- */
 

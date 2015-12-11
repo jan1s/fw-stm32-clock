@@ -1,3 +1,4 @@
+#include "platform_config.h"
 
 #include "rtc.h"
 #include "stm32f10x_conf.h"
@@ -23,12 +24,12 @@ void rtcInit()
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5AD)
+    if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A0)
     {
         /* Backup data register value is not correct or not yet programmed (when
         the first time the program is executed) */
         rtcConfiguration();
-        BKP_WriteBackupRegister(BKP_DR1, 0xA5AD);
+        BKP_WriteBackupRegister(BKP_DR1, 0xA5A0);
     }
     else
     {

@@ -1,7 +1,7 @@
 #ifndef FLIPDOT_CLOCK_H_
 #define FLIPDOT_CLOCK_H_
 
-#include "stm32f10x.h"
+#include "platform_config.h"
 
 typedef enum
 {
@@ -19,11 +19,7 @@ typedef enum
 
 extern fclock_mode_t flipdotClockMode;
 
-// ----------------------------------------------------------------------------
-
 void flipdotClockInit(void);
 void flipdotClockShowTime(uint32_t t);
-
-// ----------------------------------------------------------------------------
 
 #endif // FLIPDOT_CLOCK_H_

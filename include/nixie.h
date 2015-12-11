@@ -21,6 +21,7 @@ typedef enum
 {
     NIXIE_MAP_EUROGRID,
     NIXIE_MAP_E13D,
+    NIXIE_MAP_ZM1325,
     NIXIE_MAP_END
 } nixieMapping_t;
 
@@ -31,6 +32,8 @@ void nixieDisplay6t( nixieDisplay4t_t *d );
 
 void nixieSetMapping( const nixieMapping_t m );
 nixieMapping_t nixieGetMapping();
+void nixieStoreMapping( const nixieMapping_t m );
+nixieMapping_t nixieLoadMapping();
 
 void nixieHighVoltageEnable( void );
 void nixieHighVoltageDisable( void );

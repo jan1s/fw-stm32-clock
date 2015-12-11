@@ -61,7 +61,7 @@ bool protocolEvaluatePacket(protocolPacket_t *packet)
         }
         break;
 
-
+#ifdef CFG_TYPE_FLIPDOT
     case PROTOCOL_MSG_ID_FPD_TST:
         if(packet->payloadLength == sizeof(protocolMsgFpdTst_t))
         {
@@ -118,6 +118,7 @@ bool protocolEvaluatePacket(protocolPacket_t *packet)
         }
         break;
 #endif // CFG_TYPE_FLIPDOT_112X6
+#endif // CFG_TYPE_FLIPDOT
 
     default:
         return false;
