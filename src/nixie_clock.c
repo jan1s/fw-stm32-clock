@@ -28,47 +28,49 @@ void nixieClockShowTime(uint32_t t)
     struct tm ts = {0};
     ts = *gmtime(&t);
 
+#ifdef CFG_TYPE_NIXIE_4T
     switch(nixieClockMode)
     {
-    case nclock_mode_carp:
+    case nclock_mode_inactive:
     {
-#ifdef CFG_TYPE_NIXIE_4T
-        nixieDisplay4t_t d;
-        d.digits[0] = ts.tm_hour / 10;
-        d.digits[1] = ts.tm_hour % 10;
-        d.digits[2] = ts.tm_min / 10;
-        d.digits[3] = ts.tm_min % 10;
-        nixieDisplay4t(&d);
-#endif
+
     }
     break;
 
-    case nclock_mode_bass:
+    case nclock_mode_hhmm:
     {
-#ifdef CFG_TYPE_NIXIE_4T
         nixieDisplay4t_t d;
         d.digits[0] = ts.tm_min / 10;
         d.digits[1] = ts.tm_min % 10;
         d.digits[2] = ts.tm_sec / 10;
         d.digits[3] = ts.tm_sec % 10;
         nixieDisplay4t(&d);
-#endif
     }
     break;
 
-    default:
+    case nclock_mode_mmss:
     {
-#ifdef CFG_TYPE_NIXIE_4T
         nixieDisplay4t_t d;
         d.digits[3] = ts.tm_min / 10;
         d.digits[2] = ts.tm_min % 10;
         d.digits[1] = ts.tm_sec / 10;
         d.digits[0] = ts.tm_sec % 10;
         nixieDisplay4t(&d);
-#endif
+    }
+    break;
+
+    case nclock_mode_yyyy:
+    {
+        nixieDisplay4t_t d;
+        d.digits[3] = (ts.tm_year / 1000) % 10;
+        d.digits[2] = (ts.tm_year / 100) % 10;
+        d.digits[1] = (ts.tm_year / 10) % 10;
+        d.digits[0] = ts.tm_year % 10;
+        nixieDisplay4t(&d);
     }
     break;
     }
+#endif // CFG_TYPE_NIXIE_4T
 }
 
 #endif // CFG_TYPE_NIXIE

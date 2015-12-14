@@ -61,16 +61,44 @@ bool protocolEvaluatePacket(protocolPacket_t *packet)
         }
         break;
 
-#ifdef CFG_TYPE_FLIPDOT
-    case PROTOCOL_MSG_ID_FPD_TST:
-        if(packet->payloadLength == sizeof(protocolMsgFpdTst_t))
+#ifdef CFG_TYPE_NIXIE
+    case PROTOCOL_MSG_ID_NIX_TYP:
+        if(packet->payloadLength == 0)
         {
-            protocolMsgFpdTst_t msg;
-            memcpy(&msg, packet->payload, sizeof(protocolMsgFpdTst_t));
-            protocolMsgCallbackFpdTst(&msg);
+            protocolMsgPollCallbackNixTyp();
+        }
+        else
+        {
+            protocolMsgNixTyp_t msg;
+            memcpy(&msg, packet->payload, sizeof(protocolMsgNixTyp_t));
+            protocolMsgCallbackNixTyp(&msg);
         }
         break;
 
+    case PROTOCOL_MSG_ID_NIX_MOD:
+        if(packet->payloadLength == 0)
+        {
+            protocolMsgPollCallbackNixMod();
+        }
+        else
+        {
+            protocolMsgNixMod_t msg;
+            memcpy(&msg, packet->payload, sizeof(protocolMsgNixMod_t));
+            protocolMsgCallbackNixMod(&msg);
+        }
+        break;
+
+    case PROTOCOL_MSG_ID_NIX_TST:
+        if(packet->payloadLength == sizeof(protocolMsgNixTst_t))
+        {
+            protocolMsgNixTst_t msg;
+            memcpy(&msg, packet->payload, sizeof(protocolMsgNixTst_t));
+            protocolMsgCallbackNixTst(&msg);
+        }
+        break;
+#endif // CFG_TYPE_NIXIE
+
+#ifdef CFG_TYPE_FLIPDOT
     case PROTOCOL_MSG_ID_FPD_TYP:
         if(packet->payloadLength == 0)
         {
@@ -94,6 +122,15 @@ bool protocolEvaluatePacket(protocolPacket_t *packet)
             protocolMsgFpdMod_t msg;
             memcpy(&msg, packet->payload, sizeof(protocolMsgFpdMod_t));
             protocolMsgCallbackFpdMod(&msg);
+        }
+        break;
+
+    case PROTOCOL_MSG_ID_FPD_TST:
+        if(packet->payloadLength == sizeof(protocolMsgFpdTst_t))
+        {
+            protocolMsgFpdTst_t msg;
+            memcpy(&msg, packet->payload, sizeof(protocolMsgFpdTst_t));
+            protocolMsgCallbackFpdTst(&msg);
         }
         break;
 
@@ -175,6 +212,32 @@ void protocolMsgSendTimSrc(protocolMsgTimSrc_t *msg)
     packet.checksum = protocolCalculateChecksum(&packet);
     protocolSendPacket(&packet);
 }
+
+
+void protocolMsgSendNixTyp(protocolMsgNixTyp_t *msg)
+{
+    protocolPacket_t packet;
+    packet.sync[0] = PROTOCOL_SYNC_0;
+    packet.sync[1] = PROTOCOL_SYNC_1;
+    packet.msgId = PROTOCOL_MSG_ID_NIX_TYP;
+    packet.payloadLength = sizeof(protocolMsgNixTyp_t);
+    memcpy(packet.payload, msg, sizeof(protocolMsgNixTyp_t));
+    packet.checksum = protocolCalculateChecksum(&packet);
+    protocolSendPacket(&packet);
+}
+
+void protocolMsgSendNixMod(protocolMsgNixMod_t *msg)
+{
+    protocolPacket_t packet;
+    packet.sync[0] = PROTOCOL_SYNC_0;
+    packet.sync[1] = PROTOCOL_SYNC_1;
+    packet.msgId = PROTOCOL_MSG_ID_FPD_MOD;
+    packet.payloadLength = sizeof(protocolMsgNixMod_t);
+    memcpy(packet.payload, msg, sizeof(protocolMsgNixMod_t));
+    packet.checksum = protocolCalculateChecksum(&packet);
+    protocolSendPacket(&packet);
+}
+
 
 void protocolMsgSendFpdTyp(protocolMsgFpdTyp_t *msg)
 {

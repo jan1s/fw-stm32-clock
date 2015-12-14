@@ -109,7 +109,6 @@ void nixieDisplay4t( nixieDisplay4t_t *d )
     uint8_t outBuf[] = {0, 0, 0, 0, 0, 0};
     uint8_t outBufCount = 0;
     uint8_t outBufBitCount = 0;
-    //uint16_t outBufBitMask = 0x100;
 
     //Do thing for each digit
     for(uint8_t digitCount = 0; digitCount < 4; ++digitCount)
@@ -118,11 +117,17 @@ void nixieDisplay4t( nixieDisplay4t_t *d )
         // nicer way would be nice
         if( digitCount == 2)
         {
-            //outBuf[outBufCount] |= outBufBitMask;
-            //outBufBitMask = outBufBitMask >> 1;
-            //outBuf[outBufCount] |= outBufBitMask;
-            //outBufBitMask = outBufBitMask >> 1;
-            outBufBitCount = outBufBitCount + 2;
+            if(d->dots[0])
+            {
+                outBuf[outBufCount] |= (0x1 << outBufBitCount);
+            }
+            outBufBitCount++;
+
+            if(d->dots[1])
+            {
+                outBuf[outBufCount] |= (0x1 << outBufBitCount);
+            }
+            outBufBitCount++;
         }
 
         // get mapping for the digit to be displayed
@@ -136,7 +141,6 @@ void nixieDisplay4t( nixieDisplay4t_t *d )
             {
                 outBufCount++;
                 outBufBitCount = 0;
-                //outBufBitMask = 0x100;
             }
 
             // check if bit should be set
@@ -146,8 +150,6 @@ void nixieDisplay4t( nixieDisplay4t_t *d )
             }
 
             // increment checking position
-            //digitMapping = digitMapping << 1;
-            //outBufBitMask = outBufBitMask >> 1;
             outBufBitCount++;
         }
     }

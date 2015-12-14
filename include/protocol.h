@@ -39,7 +39,7 @@ uint16_t protocolCalculateChecksum(const protocolPacket_t *packet);
 #define PROTOCOL_MSG_ID_TIM_DST 0x0203
 #define PROTOCOL_MSG_ID_TIM_SRC 0x0204
 
-#define PROTOCOL_MSG_ID_NIX_MAP 0x0801
+#define PROTOCOL_MSG_ID_NIX_TYP 0x0801
 #define PROTOCOL_MSG_ID_NIX_MOD 0x0802
 #define PROTOCOL_MSG_ID_NIX_TST 0x0803
 #define PROTOCOL_MSG_ID_NIX_RAW 0x0804
@@ -111,8 +111,13 @@ typedef struct
 
 typedef struct
 {
-    uint8_t raw[10];
-} protocolMsgNixRaw_t;
+    uint8_t raw[6];
+} protocolMsgNixR4T_t;
+
+typedef struct
+{
+    uint8_t raw[8];
+} protocolMsgNixR6T_t;
 
 
 typedef struct
@@ -160,7 +165,8 @@ void protocolMsgCallbackTimSrc(protocolMsgTimSrc_t *src);
 void protocolMsgSendNixTyp(protocolMsgNixTyp_t *msg);
 void protocolMsgSendNixMod(protocolMsgNixMod_t *msg);
 void protocolMsgSendNixTst(protocolMsgNixTst_t *msg);
-void protocolMsgSendNixRaw(protocolMsgNixRaw_t *msg);
+void protocolMsgSendNixR4T(protocolMsgNixR4T_t *msg);
+void protocolMsgSendNixR6T(protocolMsgNixR6T_t *msg);
 
 void protocolMsgPollCallbackNixTyp(void);
 void protocolMsgCallbackNixTyp(protocolMsgNixTyp_t *typ);
@@ -168,8 +174,10 @@ void protocolMsgPollCallbackNixMod(void);
 void protocolMsgCallbackNixMod(protocolMsgNixMod_t *mod);
 void protocolMsgPollCallbackNixTst(void);
 void protocolMsgCallbackNixTst(protocolMsgNixTst_t *tst);
-void protocolMsgPollCallbackNixRaw(void);
-void protocolMsgCallbackNixRaw(protocolMsgNixRaw_t *raw);
+void protocolMsgPollCallbackNixR4T(void);
+void protocolMsgCallbackNixR4T(protocolMsgNixR4T_t *r4);
+void protocolMsgPollCallbackNixR6T(void);
+void protocolMsgCallbackNixR6T(protocolMsgNixR6T_t *r6);
 
 
 void protocolMsgSendFpdTyp(protocolMsgFpdTyp_t *msg);
