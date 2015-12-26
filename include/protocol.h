@@ -22,7 +22,7 @@ typedef struct
 void protocolInit(void);
 void protocolPoll(void);
 
-bool protocolSendChar(uint8_t c);
+void protocolSendChar(uint8_t c);
 void protocolSendPacket(protocolPacket_t *packet);
 void protocolReplyPacket(uint16_t msgId);
 bool protocolGetPacket(protocolPacket_t *packet);

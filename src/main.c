@@ -29,14 +29,18 @@ int main(void)
     led_init();
     timer_init();
 
+    led_sys_on();
+    timer_sleep(10000);
+    led_sys_off();
+
     protocolInit();
     clockInit();
 
     while(1)
     {
-        led_sys_on();
+        //led_sys_on();
         protocolPoll();
-        led_sys_off();
+        //led_sys_off();
         clockPoll();
     }
 }

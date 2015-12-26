@@ -1,9 +1,16 @@
 #include "platform_config.h"
 
+#ifdef CFG_PROTOCOL_USART1
 #include "stm32f10x_usart.h"
+#endif // CFG_PROTOCOL_USART1
+
+#ifdef CFG_PROTOCOL_USBCDC
+#include "usb_cdc.h"
+#endif // CFG_PROTOCOL_USBCDC
 
 #include "protocol.h"
 #include "timer.h"
+#include "led.h"
 #include <string.h>
 
 typedef enum
@@ -20,13 +27,13 @@ typedef enum
 } protocolDecoderState_t;
 
 
+#ifdef CFG_PROTOCOL_USART1
 /* RX Ring Buffer */
 #define USART1_RX_BUFFER_SIZE 1024
 uint8_t  USART1_Rx_Buffer [USART1_RX_BUFFER_SIZE];
 uint32_t USART1_Rx_In_Ptr = 0;
 uint32_t USART1_Rx_Out_Ptr = 0;
 uint32_t USART1_Rx_Length = 0;
-
 
 void protocolInit(void)
 {
@@ -65,6 +72,70 @@ void protocolInit(void)
     NVIC_EnableIRQ(USART1_IRQn);
 }
 
+void protocolSendChar(uint8_t c)
+{
+    USART_SendData(USART1, c);
+
+    while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET)
+    {
+    }
+}
+
+uint32_t protocolReadChar(uint8_t *c)
+{
+    uint32_t available = USART1_Rx_Length;
+    if(USART1_Rx_Length > 0)
+    {
+        *c = USART1_Rx_Buffer[USART1_Rx_Out_Ptr];
+        USART1_Rx_Out_Ptr++;
+        USART1_Rx_Length--;
+
+        if(USART1_Rx_Out_Ptr >= USART1_RX_BUFFER_SIZE)
+        {
+            USART1_Rx_Out_Ptr = 0;
+        }
+    }
+    return available;
+}
+
+void USART1_IRQHandler(void)
+{
+    if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
+    {
+        uint8_t c = USART_ReceiveData(USART1);
+        USART1_Rx_Buffer[USART1_Rx_In_Ptr] = c;
+        USART1_Rx_In_Ptr++;
+        USART1_Rx_Length++;
+
+        if(USART1_Rx_In_Ptr == USART1_RX_BUFFER_SIZE)
+        {
+            USART1_Rx_In_Ptr = 0;
+        }
+        if(USART1_Rx_Length == USART1_RX_BUFFER_SIZE)
+        {
+            // error discard rx
+        }
+    }
+}
+#endif // CFG_PROTOCOL_USART1
+
+#ifdef CFG_PROTOCOL_USBCDC
+void protocolInit(void)
+{
+    USB_CDC_Init();
+}
+
+void protocolSendChar(uint8_t c)
+{
+    USB_CDC_Send(c);
+}
+
+uint32_t protocolReadChar(uint8_t *c)
+{
+    return USB_CDC_Read(c);
+}
+#endif // CFG_PROTOCOL_USBCDC
+
 
 void protocolPoll(void)
 {
@@ -82,11 +153,17 @@ void protocolPoll(void)
             {
                 // received not implemented packet
                 // spit out some error
+            	led_usr_on();
+				timer_sleep(40000);
+				led_usr_off();
             }
         }
         else
         {
             // spit out some error
+        	led_usr_on();
+        	timer_sleep(10000);
+        	led_usr_off();
         }
     }
 }
@@ -104,16 +181,12 @@ bool protocolGetPacket(protocolPacket_t *packet)
         state = PROTOCOL_DECODER_STATE_SYNC_0;
     }
 
-    while(USART1_Rx_Length > 0)
+    uint8_t c;
+    while(protocolReadChar(&c) > 0)
     {
-        uint8_t c = USART1_Rx_Buffer[USART1_Rx_Out_Ptr];
-        USART1_Rx_Out_Ptr++;
-        USART1_Rx_Length--;
-
-        if(USART1_Rx_Out_Ptr >= USART1_RX_BUFFER_SIZE)
-        {
-            USART1_Rx_Out_Ptr = 0;
-        }
+    	led_sys_on();
+    	timer_sleep(200);
+    	led_sys_off();
 
         switch(state)
         {
@@ -208,17 +281,6 @@ void protocolSendPacket(protocolPacket_t *packet)
     protocolSendChar(packet->checksum >> 8);
 }
 
-bool protocolSendChar(uint8_t c)
-{
-    USART_SendData(USART1, c);
-
-    while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET)
-    {
-    }
-
-    return true;
-}
-
 bool protocolCheckPacket(const protocolPacket_t *packet)
 {
     uint16_t cs = protocolCalculateChecksum(packet);
@@ -249,24 +311,4 @@ uint16_t protocolCalculateChecksum(const protocolPacket_t *packet)
     }
 
     return (b << 8) + a;
-}
-
-void USART1_IRQHandler(void)
-{
-    if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-    {
-        uint8_t c = USART_ReceiveData(USART1);
-        USART1_Rx_Buffer[USART1_Rx_In_Ptr] = c;
-        USART1_Rx_In_Ptr++;
-        USART1_Rx_Length++;
-
-        if(USART1_Rx_In_Ptr == USART1_RX_BUFFER_SIZE)
-        {
-            USART1_Rx_In_Ptr = 0;
-        }
-        if(USART1_Rx_Length == USART1_RX_BUFFER_SIZE)
-        {
-            // error discard rx
-        }
-    }
 }

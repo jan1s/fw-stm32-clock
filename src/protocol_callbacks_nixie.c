@@ -9,39 +9,31 @@
 
 void protocolMsgCallbackNixTyp(protocolMsgNixTyp_t *typ)
 {
-    //BKP_WriteBackupRegister(BKP_DR4, typ->type & 0x00FF);
+    nixieMapping_t m = typ->type;
+    nixieStoreMapping(m);
+    nixieSetMapping(m);
     protocolReplyPacket(PROTOCOL_MSG_ID_NIX_TYP);
 }
 
 void protocolMsgPollCallbackNixTyp(void)
 {
     protocolMsgNixTyp_t typ;
-    typ.type = 1;
+    typ.type = nixieGetMapping();
     protocolMsgSendNixTyp(&typ);
 }
 
 void protocolMsgCallbackNixMod(protocolMsgNixMod_t *mod)
 {
-    /* Enable PWR and BKP clocks */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
-
-    /* Allow access to BKP Domain */
-    PWR_BackupAccessCmd(ENABLE);
-
-    /* Write to the BKP Domain */
-    BKP_WriteBackupRegister(BKP_DR4, mod->mode & 0xFF);
-
-    /* Deny access to BKP Domain */
-    PWR_BackupAccessCmd(DISABLE);
-
-    nixieClockMode = mod->mode;
+    nclock_mode_t m = mod->mode;
+    nixieClockStoreMode(m);
+    nixieClockSetMode(m);
     protocolReplyPacket(PROTOCOL_MSG_ID_NIX_MOD);
 }
 
 void protocolMsgPollCallbackNixMod(void)
 {
     protocolMsgNixMod_t mod;
-    mod.mode = nixieClockMode;
+    mod.mode = nixieClockGetMode();
     protocolMsgSendNixMod(&mod);
 }
 

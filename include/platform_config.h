@@ -45,6 +45,12 @@
 #define CFG_TYPE_NIXIE_4T
 //#define CFG_TYPE_NIXIE_6T
 
+
+#define CFG_PROTOCOL_USBCDC
+//#define CFG_PROTOCOL_USART1
+//#define CFG_PROTOCOL_USART2
+
+
 /* Exported functions ------------------------------------------------------- */
 
 #endif /* __PLATFORM_CONFIG_H */

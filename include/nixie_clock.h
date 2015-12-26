@@ -20,6 +20,11 @@ extern nclock_mode_t nixieClockMode;
 void nixieClockInit(void);
 void nixieClockShowTime(uint32_t t);
 
+void nixieClockStoreMode( const nclock_mode_t m );
+nclock_mode_t nixieClockLoadMode();
+void nixieClockSetMode( const nclock_mode_t m );
+nclock_mode_t nixieClockGetMode( void );
+
 // ----------------------------------------------------------------------------
 
 #endif // NIXIE_CLOCK_H_
