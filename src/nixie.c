@@ -80,6 +80,11 @@ void nixieStoreMapping( const nixieMapping_t m )
     /* Allow access to BKP Domain */
     PWR_BackupAccessCmd(ENABLE);
 
+    /* Read previous state */
+    uint16_t bkp = BKP_ReadBackupRegister(BKP_DR4);
+    bkp &= ~(0xFF00);
+    bkp |= (m << 8);
+
     /* Write to the BKP Domain */
     BKP_WriteBackupRegister(BKP_DR4, m & 0xFF);
 
@@ -89,7 +94,7 @@ void nixieStoreMapping( const nixieMapping_t m )
 
 nixieMapping_t nixieLoadMapping()
 {
-    return (BKP_ReadBackupRegister(BKP_DR4) & 0xFF);
+    return (BKP_ReadBackupRegister(BKP_DR4) & 0xFF00) >> 8;
 }
 
 void nixieSetMapping( const nixieMapping_t m )

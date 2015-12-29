@@ -5,6 +5,8 @@
 #include "protocol.h"
 #include "nixie.h"
 #include "nixie_clock.h"
+
+#include "timer.h"
 #include <string.h>
 
 void protocolMsgCallbackNixTyp(protocolMsgNixTyp_t *typ)
@@ -40,36 +42,54 @@ void protocolMsgPollCallbackNixMod(void)
 #ifdef CFG_TYPE_NIXIE_4T
 void protocolMsgCallbackNixTst(protocolMsgNixTst_t *tst)
 {
+    for(uint8_t i = 0; i < 10; ++i)
+    {
+        nixieDisplay4t_t d;
+        d.digits[3] = i;
+        d.digits[2] = i;
+        d.digits[1] = i;
+        d.digits[0] = i;
+        d.dots[0] = i % 2;
+        d.dots[1] = (i + 1) % 2;
+        nixieDisplay4t(&d);
+        timer_sleep(100000);
+    }
 
     protocolReplyPacket(PROTOCOL_MSG_ID_NIX_TST);
 }
 
 void protocolMsgCallbackNixR4T(protocolMsgNixR4T_t *r4t)
 {
-    /*
-    fdisp_84x7_t d;
-    memcpy(&d, r12, sizeof(fdisp_84x7_t));
-    flipdot_set_84x7(&d);
-    protocolReplyPacket(PROTOCOL_MSG_ID_FPD_R12);
-    */
+
 }
 #endif
 
 #ifdef CFG_TYPE_NIXIE_6T
 void protocolMsgCallbackNixTst(protocolMsgNixTst_t *tst)
 {
+    for(uint8_t i = 0; i < 10; ++i)
+    {
+        nixieDisplay4t_t d;
+        d.digits[5] = i;
+        d.digits[4] = i;
+        d.digits[3] = i;
+        d.digits[2] = i;
+        d.digits[1] = i;
+        d.digits[0] = i;
+        d.dots[0] = i % 2;
+        d.dots[1] = (i + 1) % 2;
+        d.dots[2] = i % 2;
+        d.dots[3] = (i + 1) % 2;
+        nixieDisplay4t(&d);
+        timer_sleep(100000);
+    }
 
     protocolReplyPacket(PROTOCOL_MSG_ID_NIX_TST);
 }
 
 void protocolMsgCallbackNixR6T(protocolMsgFpdR16_t *r6t)
 {
-    /*
-    fdisp_112x16_t d;
-    memcpy(&d, r16, sizeof(fdisp_112x16_t));
-    flipdot_set_112x16(&d);
-    protocolReplyPacket(PROTOCOL_MSG_ID_FPD_R16);
-    */
+
 }
 #endif
 

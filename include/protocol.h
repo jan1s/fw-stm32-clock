@@ -71,7 +71,7 @@ typedef struct
 
 typedef struct
 {
-    uint16_t offset;
+    int16_t offset;
     uint8_t hour;
     uint8_t dow;
     uint8_t week;
@@ -80,7 +80,7 @@ typedef struct
 
 typedef struct
 {
-    uint16_t offset;
+    int16_t offset;
     uint8_t hour;
     uint8_t dow;
     uint8_t week;

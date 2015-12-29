@@ -153,17 +153,17 @@ void protocolPoll(void)
             {
                 // received not implemented packet
                 // spit out some error
-            	led_usr_on();
-				timer_sleep(40000);
-				led_usr_off();
+                led_usr_on();
+                timer_sleep(40000);
+                led_usr_off();
             }
         }
         else
         {
             // spit out some error
-        	led_usr_on();
-        	timer_sleep(10000);
-        	led_usr_off();
+            led_usr_on();
+            timer_sleep(10000);
+            led_usr_off();
         }
     }
 }
@@ -184,9 +184,9 @@ bool protocolGetPacket(protocolPacket_t *packet)
     uint8_t c;
     while(protocolReadChar(&c) > 0)
     {
-    	led_sys_on();
-    	timer_sleep(200);
-    	led_sys_off();
+        led_sys_on();
+        timer_sleep(200);
+        led_sys_off();
 
         switch(state)
         {

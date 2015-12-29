@@ -5,22 +5,24 @@
 #include "led.h"
 #include "flipdot.h"
 #include "rtc.h"
-#include <time.h>
-//#include "tz.h"
+#include "tz.h"
+
 
 void protocolMsgPollCallbackTimUtc(void)
 {
-    time_t t = rtcGet();
-    struct tm ts = *gmtime(&t);
+    uint32_t epoch = rtcGet();
+
+    rtcTime_t t;
+    rtcCreateTimeFromEpoch(epoch, &t);
 
     protocolMsgTimUtc_t utc;
     utc.nano = 0;
-    utc.year = ts.tm_year + 1900;
-    utc.month = ts.tm_mon - 1;
-    utc.day = ts.tm_mday;
-    utc.hour = ts.tm_hour;
-    utc.min = ts.tm_min;
-    utc.sec = ts.tm_sec;
+    utc.year = t.years + 1900;
+    utc.month = t.months;
+    utc.day = t.days;
+    utc.hour = t.hours;
+    utc.min = t.minutes;
+    utc.sec = t.seconds;
     utc.valid = true;
 
     protocolMsgSendTimUtc(&utc);
@@ -44,16 +46,8 @@ void protocolMsgCallbackTimUtc(protocolMsgTimUtc_t *utc)
 
 void protocolMsgPollCallbackTimStd(void)
 {
-    /*
     tzRule_t r;
-    error_t e;
-
-    e = tzGetSTD(&r);
-
-    if (e)
-    {
-    	// answer with error
-    }
+    tzGetSTD(&r);
 
     protocolMsgTimStd_t std;
     std.offset = r.offset;
@@ -63,105 +57,81 @@ void protocolMsgPollCallbackTimStd(void)
     std.month = r.month;
 
     protocolMsgSendTimStd(&std);
-    */
 }
 
 void protocolMsgPollCallbackTimDst(void)
 {
-    /*
     tzRule_t r;
-    error_t e;
-
-    e = tzGetDST(&r);
-
-    if (e)
-    {
-    	// answer with error
-    }
+    tzGetDST(&r);
 
     protocolMsgTimDst_t dst;
-    std.offset = r.offset;
-    std.hour = r.hour;
-    std.dow = r.dow;
-    std.week = r.week;
-    std.month = r.month;
+    dst.offset = r.offset;
+    dst.hour = r.hour;
+    dst.dow = r.dow;
+    dst.week = r.week;
+    dst.month = r.month;
 
-    protocolMsgSendTimStd(&dst);
-    */
+    protocolMsgSendTimDst(&dst);
 }
 
 void protocolMsgCallbackTimStd(protocolMsgTimStd_t *std)
 {
-    /*
     if ((std->offset < -2000) || (std->offset > 2000))
     {
-    	// answer with error
+        // answer with error
     }
     if (std->hour > 23)
     {
-    	// answer with error
+        // answer with error
     }
     if (std->dow > 6)
     {
-    	// answer with error
+        // answer with error
     }
     if (std->week > 4)
     {
-    	// answer with error
+        // answer with error
     }
     if (std->month > 12)
     {
-    	// answer with error
+        // answer with error
     }
 
-    error_t e;
     tzRule_t r;
+    tzCreateRule(std->offset, std->hour, std->dow, std->week, std->month, &r);
 
-    e = tzCreateRule(std->offset, std->hour, std->dow, std->week, std->month, &r);
-    if (e)
-    {
-    	// answer with error
-    }
-
+    tzStoreSTD(&r);
     tzSetSTD(&r);
-    protocolMsgPollCallbackTimStd();
-    */
+    protocolReplyPacket(PROTOCOL_MSG_ID_TIM_STD);
 }
 
 void protocolMsgCallbackTimDst(protocolMsgTimDst_t *dst)
 {
-    /*
     if ((dst->offset < -2000) || (dst->offset > 2000))
     {
-    	// answer with error
+        // answer with error
     }
     if (dst->hour > 23)
     {
-    	// answer with error
+        // answer with error
     }
     if (dst->dow > 6)
     {
-    	// answer with error
+        // answer with error
     }
     if (dst->week > 4)
     {
-    	// answer with error
+        // answer with error
     }
     if (dst->month > 12)
     {
-    	// answer with error
+        // answer with error
     }
 
-    error_t e;
     tzRule_t r;
+    tzCreateRule(dst->offset, dst->hour, dst->dow, dst->week, dst->month, &r);
 
-    e = tzCreateRule(dst->offset, dst->hour, dst->dow, dst->week, dst->month, &r);
-    if (e)
-    {
-    	// answer with error
-    }
-
+    tzStoreDST(&r);
     tzSetDST(&r);
     protocolReplyPacket(PROTOCOL_MSG_ID_TIM_DST);
-    */
 }

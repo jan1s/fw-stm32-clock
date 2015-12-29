@@ -11,19 +11,6 @@ void rtcConfiguration(void);
 
 void rtcInit()
 {
-    /* NVIC configuration */
-    NVIC_InitTypeDef NVIC_InitStructure;
-
-    /* Configure one bit for preemption priority */
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
-
-    /* Enable the RTC Interrupt */
-    NVIC_InitStructure.NVIC_IRQChannel = RTC_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-
     if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A0)
     {
         /* Backup data register value is not correct or not yet programmed (when
@@ -55,6 +42,19 @@ void rtcInit()
 
     /* Clear reset flags */
     RCC_ClearFlag();
+
+    /* NVIC configuration */
+    NVIC_InitTypeDef NVIC_InitStructure;
+
+    /* Configure one bit for preemption priority */
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+
+    /* Enable the RTC Interrupt */
+    NVIC_InitStructure.NVIC_IRQChannel = RTC_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 }
 
 
