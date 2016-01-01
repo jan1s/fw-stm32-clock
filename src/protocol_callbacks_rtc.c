@@ -30,16 +30,11 @@ void protocolMsgPollCallbackTimUtc(void)
 
 void protocolMsgCallbackTimUtc(protocolMsgTimUtc_t *utc)
 {
-    struct tm ts = {0};
-    ts.tm_year = utc->year - 1900;
-    ts.tm_mon = utc->month - 1;
-    ts.tm_mday = utc->day;
-    ts.tm_hour = utc->hour;
-    ts.tm_min = utc->min;
-    ts.tm_sec = utc->sec;
+    rtcTime_t t;
+    rtcCreateTime ( utc->year, utc->month, utc->day, utc->hour, utc->min, utc->sec, 0, &t );
 
-    uint32_t t = mktime(&ts);
-    rtcSet(t);
+    uint32_t epoch = rtcToEpochTime ( &t );
+    rtcSet(epoch);
 
     protocolReplyPacket(PROTOCOL_MSG_ID_TIM_UTC);
 }

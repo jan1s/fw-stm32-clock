@@ -3,23 +3,35 @@
 #include "rtc.h"
 #include "stm32f10x_conf.h"
 
+
+typedef enum
+{
+    RTC_CFG_UNINITIALIZED = 0,
+    RTC_CFG_INITIALIZED
+} rtcConfig_t;
+
+
 uint32_t rtcCounter = 0;
+rtcConfig_t rtcConfig;
 
 void RTC_IRQHandler(void);
 
 void rtcConfiguration(void);
+void rtcEnableInterrupt(void);
+void rtcStoreConfiguration(rtcConfig_t cfg);
+rtcConfig_t rtcLoadConfiguration(void);
+void rtcSetConfiguration(rtcConfig_t cfg);
+rtcConfig_t rtcGetConfiguration(void);
 
 void rtcInit()
 {
-    if (BKP_ReadBackupRegister(BKP_DR1) != 0xA5A0)
+    rtcConfig = rtcLoadConfiguration();
+
+    if (rtcConfig == RTC_CFG_INITIALIZED)
     {
-        /* Backup data register value is not correct or not yet programmed (when
-        the first time the program is executed) */
-        rtcConfiguration();
-        BKP_WriteBackupRegister(BKP_DR1, 0xA5A0);
-    }
-    else
-    {
+        /* Enable calling the interrupt function */
+        rtcEnableInterrupt();
+
         /* Check if the Power On Reset flag is set */
         if (RCC_GetFlagStatus(RCC_FLAG_PORRST) != RESET)
         {
@@ -42,7 +54,37 @@ void rtcInit()
 
     /* Clear reset flags */
     RCC_ClearFlag();
+}
 
+rtcConfig_t rtcLoadConfiguration(void)
+{
+    return BKP_ReadBackupRegister(BKP_DR1);
+}
+
+void rtcStoreConfiguration(rtcConfig_t cfg)
+{
+    /* Allow access to BKP Domain */
+    PWR_BackupAccessCmd(ENABLE);
+
+    BKP_WriteBackupRegister(BKP_DR1, cfg);
+
+    /* Deny access to BKP Domain */
+    PWR_BackupAccessCmd(DISABLE);
+}
+
+rtcConfig_t rtcGetConfiguration(void)
+{
+    return rtcConfig;
+}
+
+void rtcSetConfiguration(rtcConfig_t cfg)
+{
+    rtcConfig = cfg;
+}
+
+
+void rtcEnableInterrupt(void)
+{
     /* NVIC configuration */
     NVIC_InitTypeDef NVIC_InitStructure;
 
@@ -57,12 +99,6 @@ void rtcInit()
     NVIC_Init(&NVIC_InitStructure);
 }
 
-
-/**
-  * @brief  Configures the RTC.
-  * @param  None
-  * @retval None
-  */
 void rtcConfiguration(void)
 {
     /* Enable PWR and BKP clocks */
@@ -72,7 +108,7 @@ void rtcConfiguration(void)
     PWR_BackupAccessCmd(ENABLE);
 
     /* Reset Backup Domain */
-    BKP_DeInit();
+    // BKP_DeInit();
 
     /* Enable LSE */
     RCC_LSEConfig(RCC_LSE_ON);
@@ -114,13 +150,20 @@ uint32_t rtcGet(void)
 
 void rtcSet(uint32_t t)
 {
-    /* Wait until last write operation on RTC registers has finished */
-    RTC_WaitForLastTask();
+    /* Call the configuration method */
+    rtcConfiguration();
 
+    /* Write counter */
     RTC_SetCounter(t);
 
     /* Wait until last write operation on RTC registers has finished */
     RTC_WaitForLastTask();
+
+    /* Store that the rtc was initialized */
+    rtcStoreConfiguration(RTC_CFG_INITIALIZED);
+
+    /* Reinitialize rtc */
+    rtcInit();
 }
 
 
