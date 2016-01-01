@@ -11,15 +11,16 @@
 #endif
 
 #include "rtc.h"
-#include <time.h>
+#include "tz.h"
 
-time_t lastUtc = 0;
+uint32_t lastEpoch = 0;
 
 
 void clockInit()
 {
     rtcInit();
-    lastUtc = rtcGet();
+    tzInit();
+    lastEpoch = rtcGet();
 
 #ifdef CFG_TYPE_FLIPDOT
     flipdot_init();
@@ -34,15 +35,22 @@ void clockInit()
 
 void clockPoll()
 {
-    time_t utc = rtcGet();
-    if(utc != lastUtc)
+    uint32_t epoch = rtcGet();
+
+    if(epoch != lastEpoch)
     {
+        rtcTime_t utc;
+        rtcTime_t local;
+
+        rtcCreateTimeFromEpoch( epoch, &utc );
+        tzUTCToLocal( &utc, &local );
+
 #ifdef CFG_TYPE_FLIPDOT
-        flipdotClockShowTime(utc);
+        flipdotClockShowTime(local);
 #endif
 
 #ifdef CFG_TYPE_NIXIE
-        nixieClockShowTime(utc);
+        nixieClockShowTime(local);
 #endif
     }
 }

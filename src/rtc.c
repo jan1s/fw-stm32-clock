@@ -141,8 +141,6 @@ void rtcConfiguration(void)
     RTC_WaitForLastTask();
 }
 
-
-
 uint32_t rtcGet(void)
 {
     return rtcCounter;

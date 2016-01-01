@@ -10,8 +10,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "timer.h"
-
 nclock_mode_t nixieClockMode;
 
 // ----------------------------------------------------------------------------
@@ -60,11 +58,8 @@ nclock_mode_t nixieClockGetMode( void )
     return nixieClockMode;
 }
 
-void nixieClockShowTime(uint32_t epoch)
+void nixieClockShowTime(rtcTime_t t)
 {
-    rtcTime_t t;
-    rtcCreateTimeFromEpoch(epoch, &t);
-
 #ifdef CFG_TYPE_NIXIE_4T
     switch(nixieClockMode)
     {

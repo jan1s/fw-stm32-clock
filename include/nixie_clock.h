@@ -2,6 +2,7 @@
 #define NIXIE_CLOCK_H_
 
 #include "platform_config.h"
+#include "rtc_functions.h"
 
 #ifdef CFG_TYPE_NIXIE_4T
 typedef enum
@@ -18,7 +19,7 @@ extern nclock_mode_t nixieClockMode;
 // ----------------------------------------------------------------------------
 
 void nixieClockInit(void);
-void nixieClockShowTime(uint32_t t);
+void nixieClockShowTime(rtcTime_t t);
 
 void nixieClockStoreMode( const nclock_mode_t m );
 nclock_mode_t nixieClockLoadMode();
