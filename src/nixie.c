@@ -13,6 +13,7 @@
 
 nixieMapping_t mapping;
 
+
 void nixieRegisterWrite(uint8_t *buf, size_t length);
 
 void nixieInit()
@@ -65,9 +66,7 @@ void nixieInit()
     SPI_Cmd(SPI1, ENABLE);
 
     /* Get Mapping */
-    //mapping = nixieLoadMapping();
-    mapping = NIXIE_MAP_ZM1325;
-
+    mapping = nixieLoadMapping();
 
     nixieHighVoltageEnable();
 }
@@ -107,7 +106,6 @@ nixieMapping_t nixieGetMapping( void )
     return mapping;
 }
 
-#ifdef CFG_TYPE_NIXIE_4T
 void nixieDisplay4t( nixieDisplay4t_t *d )
 {
     // output buffer -> gets written into shift registers in the end
@@ -161,9 +159,7 @@ void nixieDisplay4t( nixieDisplay4t_t *d )
 
     nixieRegisterWrite(outBuf, sizeof(outBuf));
 }
-#endif // CFG_TYPE_NIXIE_4T
 
-#ifdef CFG_TYPE_NIXIE_6T
 void nixieDisplay6t( nixieDisplay6t_t *d )
 {
     // output buffer -> gets written into shift registers in the end
@@ -215,7 +211,6 @@ void nixieDisplay6t( nixieDisplay6t_t *d )
 
     nixieRegisterWrite(outBuf, sizeof(outBuf));
 }
-#endif // CFG_TYPE_NIXIE_6T
 
 void nixieRegisterWrite(uint8_t *buf, size_t length)
 {

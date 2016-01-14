@@ -12,12 +12,10 @@
 
 nclock_mode_t nixieClockMode;
 
-// ----------------------------------------------------------------------------
 
 void nixieClockInit()
 {
-    //nixieClockMode = nixieClockLoadMode();
-    nixieClockMode = nclock_mode_hhmm;
+    nixieClockMode = nixieClockLoadMode();
 
     nixieInit();
     nixieHighVoltageEnable();
@@ -60,7 +58,6 @@ nclock_mode_t nixieClockGetMode( void )
 
 void nixieClockShowTime(rtcTime_t t)
 {
-#ifdef CFG_TYPE_NIXIE_4T
     switch(nixieClockMode)
     {
     case nclock_mode_inactive:
@@ -115,10 +112,22 @@ void nixieClockShowTime(rtcTime_t t)
         nixieDisplay4t(&d);
     }
     break;
+
+    case nclock_mode_hhmmss:
+    {
+        nixieDisplay6t_t d;
+        d.digits[5] = t.hours / 10;
+        d.digits[4] = t.hours % 10;
+        d.digits[3] = t.minutes / 10;
+        d.digits[2] = t.minutes % 10;
+        d.digits[1] = t.seconds / 10;
+        d.digits[0] = t.seconds % 10;
+        d.dots[1] = t.seconds % 2;
+        d.dots[0] = t.seconds % 2;
+        nixieDisplay6t(&d);
     }
-#endif // CFG_TYPE_NIXIE_4T
+    break;
+    }
 }
 
 #endif // CFG_TYPE_NIXIE
-
-// ----------------------------------------------------------------------------
