@@ -89,8 +89,7 @@ typedef struct
 
 typedef struct
 {
-    uint32_t src;
-    uint8_t mode;
+    uint8_t src;
 } protocolMsgTimSrc_t;
 
 

@@ -19,10 +19,15 @@ typedef struct
 
 typedef enum
 {
-    NIXIE_MAP_EUROGRID,
-    NIXIE_MAP_E13D,
-    NIXIE_MAP_ZM1325,
-    NIXIE_MAP_END
+    NXIE_TYPE_NONE = 0,
+    NXIE_TYPE_A,
+    NXIE_TYPE_B,
+    NXIE_TYPE_C,
+    NXIE_TYPE_D,
+    NXIE_TYPE_E,
+    NXIE_TYPE_F,
+    NXIE_TYPE_G,
+    NXIE_TYPE_END
 } nixieMapping_t;
 
 void nixieInit();

@@ -41,6 +41,8 @@ void protocolMsgPollCallbackNixMod(void)
 
 void protocolMsgCallbackNixTst(protocolMsgNixTst_t *tst)
 {
+    protocolReplyPacket(PROTOCOL_MSG_ID_NIX_TST);
+
     for(uint8_t i = 0; i < 10; ++i)
     {
         nixieDisplay4t_t d;
@@ -57,8 +59,6 @@ void protocolMsgCallbackNixTst(protocolMsgNixTst_t *tst)
         nixieDisplay4t(&d);
         timer_sleep(100000);
     }
-
-    protocolReplyPacket(PROTOCOL_MSG_ID_NIX_TST);
 }
 
 void protocolMsgCallbackNixR4T(protocolMsgNixR4T_t *r4t)

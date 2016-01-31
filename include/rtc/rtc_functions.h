@@ -36,7 +36,6 @@
 #define RTC_FUNCTIONS_H_
 
 #include "platform_config.h"
-#include "errors.h"
 
 #include <stdbool.h>
 
@@ -45,6 +44,37 @@
 #define RTC_MAX_EPOCH_TIME  (2147483647UL)
 #define RTC_MIN_EPOCH_YEAR  (70)
 #define RTC_MAX_EPOCH_YEAR  (138)
+
+/**************************************************************************/
+/*!
+    Common error messages used for the RTC
+*/
+/**************************************************************************/
+typedef enum
+{
+    /*=======================================================================
+      GENERIC ERRORS                                         0x0000 .. 0x00FF
+      -----------------------------------------------------------------------
+      These error codes can be used anywhere in the system
+      -----------------------------------------------------------------------*/
+    ERROR_NONE                                  = 0x0,  /**< Indicates no error occurred */
+    ERROR_OPERATIONTIMEDOUT                     = 0x1,  /**< Operation timed out before completion */
+    ERROR_ADDRESSOUTOFRANGE                     = 0x2,  /**< The supplied address is out of range */
+    ERROR_BUFFEROVERFLOW                        = 0x3,  /**< The proposed action will cause a buffer overflow */
+    ERROR_INVALIDPARAMETER                      = 0x4,  /**< An invalid parameter value was provided */
+    ERROR_DEVICENOTINITIALISED                  = 0x5,  /**< Attempting to execute a function on an uninitialised peripheral */
+    ERROR_UNEXPECTEDVALUE                       = 0x6,  /**< An unexpected value was found inside a function */
+    /*=======================================================================*/
+
+    /*=======================================================================
+      RTC ERRORS                                             0x0140 .. 0x014F
+      -----------------------------------------------------------------------
+      Real time clock (RTC) errors
+      -----------------------------------------------------------------------*/
+    ERROR_RTC_OUTOFEPOCHRANGE                   = 0x141,  /**< RTC time must be kept in epoch range */
+    /*=======================================================================*/
+
+} error_t;
 
 /**************************************************************************/
 /*!

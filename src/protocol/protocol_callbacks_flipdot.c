@@ -53,6 +53,7 @@ void protocolMsgCallbackFpdTst(protocolMsgFpdTst_t *tst)
         flipdot_wipe_84x7(0);
         flipdot_wipe_84x7(1);
     }
+
     protocolReplyPacket(PROTOCOL_MSG_ID_FPD_TST);
 }
 

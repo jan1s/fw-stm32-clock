@@ -4,7 +4,7 @@
 #include "nixie.h"
 
 /*
-EUROGRID - Shiftregister layout
+NXIE_TYPE_A - Shiftregister layout
 
 (  Tube6  )(  Tube5  )  (  Tube4  ) (  Tube3  )  (  Tube2  )(  Tube1  ) <- Tubes
 67098123 45670981 2345**67 09812345 67098123 45**6709 81234567 09812345 <- Tube digits
@@ -36,7 +36,7 @@ After every two tubes are two dots to seperate the seconds, minutes and hours.
 */
 
 /*
-B13D - Shiftregister layout
+NXIE_TYPE_B - Shiftregister layout
 
 (  Tube6  )(  Tube5  )  (  Tube4  ) (  Tube3  )  (  Tube2  )(  Tube1  ) <- Tubes
 12345678 90123456 7890**12 34567890 12345678 90**1234 56789012 34567890 <- Tube digits
@@ -69,13 +69,13 @@ After every two tubes are two dots to seperate the seconds, minutes and hours.
 
 
 /*
-ZM1325 - Shiftregister layout
+NXIE_TYPE_C - Shiftregister layout
 
-  (  Tube4   )(  Tube3   )   (  Tube2   )(   Tube1  ) <- Tubes
-  234576 8P910234 5768P910 **234576 8P910234 5768P910 <- Tube digits
-|||||||| |||||||| |||||||| |||||||| |||||||| ||||||||
-HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA <- Shiftregister Outputs
- Reg. 6   Reg. 5   Reg. 4   Reg. 3   Reg. 2   Reg. 1  <- Shiftregisters
+  (  Tube6   )(  Tube5   )   (  Tube4   )(  Tube3   )   (  Tube2   )(   Tube1  ) <- Tubes
+  234576 8P910234 5768P910 **234576 8P910234 5768P910 **234576 8P910234 5768P910 <- Tube digits
+  |||||| |||||||| |||||||| |||||||| |||||||| |||||||| |||||||| |||||||| ||||||||
+HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA <- Shiftregister Outputs
+ Reg. 9   Reg. 8   Reg. 7   Reg. 6   Reg. 5   Reg. 4   Reg. 3   Reg. 2   Reg. 1  <- Shiftregisters
 
 The mapping of the tube pins is repeating in 11bit periods.
 Therefore it is possible to use following constants to select the digits to display:
@@ -101,11 +101,16 @@ The bitwurst is shifted from right to left in the shiftregisters shown above.
 After every two tubes are two dots to seperate the seconds, minutes and hours.
 */
 
-const uint16_t digitMap[NIXIE_MAP_END][11] =
+const uint16_t digitMap[NIXIE_TYPE_END][11] =
 {
-    { 0x0080, 0x0010, 0x0008, 0x0004, 0x0002, 0x0001, 0x0200, 0x0100, 0x0020, 0x0040, 0x0000 }, // EUROGRID
-    { 0x0001, 0x0200, 0x0100, 0x0080, 0x0040, 0x0020, 0x0010, 0x0008, 0x0004, 0x0002, 0x0000 }, // B13D
-    { 0x0001, 0x0002, 0x0400, 0x0200, 0x0100, 0x0080, 0x0020, 0x0040, 0x0010, 0x0004, 0x0008 }, // ZM1325
+    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }, // NONE
+    { 0x0080, 0x0010, 0x0008, 0x0004, 0x0002, 0x0001, 0x0200, 0x0100, 0x0020, 0x0040, 0x0000 }, // A
+    { 0x0001, 0x0200, 0x0100, 0x0080, 0x0040, 0x0020, 0x0010, 0x0008, 0x0004, 0x0002, 0x0000 }, // B
+    { 0x0001, 0x0002, 0x0400, 0x0200, 0x0100, 0x0080, 0x0020, 0x0040, 0x0010, 0x0004, 0x0008 }, // C
+    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }, // D
+    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }, // E
+    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }, // F
+    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }, // G
 };
 
 #endif // CFG_TYPE_NIXIE
