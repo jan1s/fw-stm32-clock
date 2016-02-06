@@ -32,4 +32,7 @@
 *.dSYM/
 /Debug/
 
-.settings/language.settings.xml
+.settings/*
+.metadata/*
+
+RemoteSystemsTempFiles/.project

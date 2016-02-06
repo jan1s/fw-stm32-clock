@@ -1,6 +1,6 @@
 #include "platform_config.h"
 
-#include "tz.h"
+#include "rtc/tz.h"
 #include <string.h>
 
 static rtcTime_t _tzDSTStartUTC;

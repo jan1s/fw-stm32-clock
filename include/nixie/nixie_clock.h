@@ -2,7 +2,7 @@
 #define NIXIE_CLOCK_H_
 
 #include "platform_config.h"
-#include "rtc_functions.h"
+#include "rtc/rtc_functions.h"
 
 typedef enum
 {

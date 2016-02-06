@@ -1,7 +1,7 @@
 #include "platform_config.h"
 #include "led.h"
 
-#ifdef CFG_TYPE_FLIPDOT
+#ifdef CFG_FLIPDOT
 void led_init()
 {
     /* GPIOA, GPIOB and SPI1 clock enable */
@@ -37,9 +37,9 @@ void led_usr_off()
 {
     GPIO_ResetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << 11);
 }
-#endif // CFG_TYPE_FLIPDOT
+#endif
 
-#ifdef CFG_TYPE_NIXIE
+#ifdef CFG_NIXIE
 void led_init()
 {
     /* GPIOA, GPIOB and SPI1 clock enable */
@@ -75,4 +75,4 @@ void led_usr_off()
 {
     GPIO_SetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << 8);
 }
-#endif // CFG_TYPE_NIXIE
+#endif

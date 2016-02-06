@@ -6,7 +6,8 @@
 
     Software License Agreement (BSD License)
 
-    Copyright (c) 2013, K. Townsend (microBuilder.eu)
+    Original work Copyright (c) 2013, K. Townsend (microBuilder.eu)
+    Modified work Copyright 2016, Janis
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

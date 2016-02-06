@@ -36,7 +36,7 @@
 */
 /**************************************************************************/
 
-#include "projectconfig.h"
+#include "platform_config.h"
 
 #ifdef CFG_DCF
 

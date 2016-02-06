@@ -1,6 +1,6 @@
 #include "platform_config.h"
 
-#include "rtc.h"
+#include "rtc/rtc.h"
 #include "stm32f10x_conf.h"
 
 

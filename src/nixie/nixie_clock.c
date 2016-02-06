@@ -1,11 +1,11 @@
 #include "platform_config.h"
 
-#ifdef CFG_TYPE_NIXIE
+#ifdef CFG_NIXIE
 
-#include "nixie.h"
-#include "nixie_clock.h"
-#include "rtc.h"
-#include "rtc_functions.h"
+#include "nixie/nixie.h"
+#include "nixie/nixie_clock.h"
+#include "rtc/rtc.h"
+#include "rtc/rtc_functions.h"
 
 #include <stdio.h>
 #include <string.h>

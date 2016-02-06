@@ -1,10 +1,10 @@
 #include "platform_config.h"
 
-#ifdef CFG_TYPE_NIXIE
+#ifdef CFG_NIXIE
 
 #include <string.h>
-#include "nixie.h"
-#include "nixie_mapping.h"
+#include "nixie/nixie.h"
+#include "nixie/nixie_mapping.h"
 
 
 #define CFG_NIXIE_RCK_PIN       (6)
@@ -241,5 +241,5 @@ void nixieHighVoltageDisable ( void )
     GPIO_ResetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << CFG_NIXIE_HVEN_PIN);
 }
 
-#endif // CFG_TYPE_NIXIE
+#endif
 

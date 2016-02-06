@@ -8,7 +8,7 @@
 #include "usb_cdc.h"
 #endif // CFG_PROTOCOL_USBCDC
 
-#include "protocol.h"
+#include "protocol/protocol.h"
 #include "timer.h"
 #include "led.h"
 #include <string.h>
@@ -28,94 +28,20 @@ typedef enum
 
 
 #ifdef CFG_PROTOCOL_USART1
-/* RX Ring Buffer */
-#define USART1_RX_BUFFER_SIZE 1024
-uint8_t  USART1_Rx_Buffer [USART1_RX_BUFFER_SIZE];
-uint32_t USART1_Rx_In_Ptr = 0;
-uint32_t USART1_Rx_Out_Ptr = 0;
-uint32_t USART1_Rx_Length = 0;
 
 void protocolInit(void)
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_AFIO |
-                           RCC_APB2Periph_GPIOA, ENABLE);
 
-    GPIO_InitTypeDef GPIO_InitStructure;
-
-    /* TX Pin */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-    /* RX Pin */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-
-    USART_InitTypeDef USART_InitStructure;
-
-    USART_InitStructure.USART_BaudRate = 115200;
-    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-    USART_InitStructure.USART_StopBits = USART_StopBits_1;
-    USART_InitStructure.USART_Parity = USART_Parity_No;
-    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-
-    USART_Init(USART1, &USART_InitStructure);
-
-    USART_Cmd(USART1, ENABLE);
-
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-    NVIC_EnableIRQ(USART1_IRQn);
 }
 
 void protocolSendChar(uint8_t c)
 {
-    USART_SendData(USART1, c);
 
-    while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET)
-    {
-    }
 }
 
 uint32_t protocolReadChar(uint8_t *c)
 {
-    uint32_t available = USART1_Rx_Length;
-    if(USART1_Rx_Length > 0)
-    {
-        *c = USART1_Rx_Buffer[USART1_Rx_Out_Ptr];
-        USART1_Rx_Out_Ptr++;
-        USART1_Rx_Length--;
-
-        if(USART1_Rx_Out_Ptr >= USART1_RX_BUFFER_SIZE)
-        {
-            USART1_Rx_Out_Ptr = 0;
-        }
-    }
-    return available;
-}
-
-void USART1_IRQHandler(void)
-{
-    if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-    {
-        uint8_t c = USART_ReceiveData(USART1);
-        USART1_Rx_Buffer[USART1_Rx_In_Ptr] = c;
-        USART1_Rx_In_Ptr++;
-        USART1_Rx_Length++;
-
-        if(USART1_Rx_In_Ptr == USART1_RX_BUFFER_SIZE)
-        {
-            USART1_Rx_In_Ptr = 0;
-        }
-        if(USART1_Rx_Length == USART1_RX_BUFFER_SIZE)
-        {
-            // error discard rx
-        }
-    }
+    return 0;
 }
 #endif // CFG_PROTOCOL_USART1
 

@@ -1,6 +1,6 @@
 #include "platform_config.h"
 
-#include "protocol.h"
+#include "protocol/protocol.h"
 
 #include <string.h>
 
@@ -61,7 +61,7 @@ bool protocolEvaluatePacket(protocolPacket_t *packet)
         }
         break;
 
-#ifdef CFG_TYPE_NIXIE
+#ifdef CFG_NIXIE
     case PROTOCOL_MSG_ID_NIX_TYP:
         if(packet->payloadLength == 0)
         {
@@ -96,9 +96,9 @@ bool protocolEvaluatePacket(protocolPacket_t *packet)
             protocolMsgCallbackNixTst(&msg);
         }
         break;
-#endif // CFG_TYPE_NIXIE
+#endif
 
-#ifdef CFG_TYPE_FLIPDOT
+#ifdef CFG_FLIPDOT
     case PROTOCOL_MSG_ID_FPD_TYP:
         if(packet->payloadLength == 0)
         {

@@ -1,11 +1,11 @@
 #include "platform_config.h"
 
-#include "protocol.h"
+#include "protocol/protocol.h"
 
 #include "led.h"
-#include "flipdot.h"
-#include "rtc.h"
-#include "tz.h"
+#include "flipdot/flipdot.h"
+#include "rtc/rtc.h"
+#include "rtc/tz.h"
 
 
 void protocolMsgPollCallbackTimUtc(void)

@@ -1,10 +1,10 @@
 #include "platform_config.h"
 
-#ifdef CFG_TYPE_FLIPDOT
+#ifdef CFG_FLIPDOT
 
-#include "protocol.h"
-#include "flipdot.h"
-#include "flipdot_clock.h"
+#include "protocol/protocol.h"
+#include "flipdot/flipdot.h"
+#include "flipdot/flipdot_clock.h"
 #include <string.h>
 
 void protocolMsgCallbackFpdTyp(protocolMsgFpdTyp_t *typ)
@@ -86,4 +86,4 @@ void protocolMsgCallbackFpdR16(protocolMsgFpdR16_t *r16)
 }
 #endif
 
-#endif // CFG_TYPE_FLIPDOT
+#endif

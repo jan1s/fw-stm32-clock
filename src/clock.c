@@ -1,17 +1,17 @@
 #include "platform_config.h"
 
-#ifdef CFG_TYPE_FLIPDOT
+#ifdef CFG_FLIPDOT
 #include "flipdot.h"
 #include "flipdot_clock.h"
 #endif
 
-#ifdef CFG_TYPE_NIXIE
-#include "nixie.h"
-#include "nixie_clock.h"
+#ifdef CFG_NIXIE
+#include "nixie/nixie.h"
+#include "nixie/nixie_clock.h"
 #endif
 
-#include "rtc.h"
-#include "tz.h"
+#include "rtc/rtc.h"
+#include "rtc/tz.h"
 
 uint32_t lastEpoch = 0;
 
@@ -22,12 +22,12 @@ void clockInit()
     tzInit();
     lastEpoch = rtcGet();
 
-#ifdef CFG_TYPE_FLIPDOT
+#ifdef CFG_FLIPDOT
     flipdot_init();
     flipdotClockInit();
 #endif
 
-#ifdef CFG_TYPE_NIXIE
+#ifdef CFG_NIXIE
     nixieInit();
     nixieClockInit();
 #endif
@@ -45,11 +45,11 @@ void clockPoll()
         rtcCreateTimeFromEpoch( epoch, &utc );
         tzUTCToLocal( &utc, &local );
 
-#ifdef CFG_TYPE_FLIPDOT
+#ifdef CFG_FLIPDOT
         flipdotClockShowTime(local);
 #endif
 
-#ifdef CFG_TYPE_NIXIE
+#ifdef CFG_NIXIE
         nixieClockShowTime(local);
 #endif
     }

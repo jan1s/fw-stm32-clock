@@ -5,7 +5,8 @@
 #include "led.h"
 #include "timer.h"
 #include "clock.h"
-#include "protocol.h"
+#include "cli/cli.h"
+#include "protocol/protocol.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -33,13 +34,15 @@ int main(void)
     timer_sleep(10000);
     led_sys_off();
 
-    protocolInit();
+    cliInit();
+    //protocolInit();
     clockInit();
 
     while(1)
     {
         //led_sys_on();
-        protocolPoll();
+        //protocolPoll();
+        cliPoll();
         //led_sys_off();
         clockPoll();
     }

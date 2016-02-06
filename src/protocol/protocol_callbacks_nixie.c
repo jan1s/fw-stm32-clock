@@ -1,10 +1,10 @@
 #include "platform_config.h"
 
-#ifdef CFG_TYPE_NIXIE
+#ifdef CFG_NIXIE
 
-#include "protocol.h"
-#include "nixie.h"
-#include "nixie_clock.h"
+#include "protocol/protocol.h"
+#include "nixie/nixie.h"
+#include "nixie/nixie_clock.h"
 
 #include "timer.h"
 #include <string.h>
@@ -61,6 +61,7 @@ void protocolMsgCallbackNixTst(protocolMsgNixTst_t *tst)
     }
 }
 
+/*
 void protocolMsgCallbackNixR4T(protocolMsgNixR4T_t *r4t)
 {
 
@@ -70,5 +71,6 @@ void protocolMsgCallbackNixR6T(protocolMsgFpdR16_t *r6t)
 {
 
 }
+*/
 
-#endif // CFG_TYPE_NIXIE
+#endif
