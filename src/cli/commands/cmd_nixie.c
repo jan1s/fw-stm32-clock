@@ -42,7 +42,7 @@
 #ifdef CFG_NIXIE
 
 #include "nixie/nixie.h"
-#include "nixie/nixie_clock.h"
+#include "nixie/nixieclock.h"
 #include "print.h"
 
 #include <stdio.h>
@@ -52,69 +52,69 @@
 
 void cmd_nixie_test(uint8_t argc, char **argv)
 {
-  /*
-  nixieDisplay_t display;
+    /*
+    nixieDisplay_t display;
 
-  for(uint8_t i = 0; i < 10; i++)
-  {
-    display.digits[0] = i;
-    display.digits[1] = i;
-    display.digits[2] = i;
-    display.digits[3] = i;
-    display.digits[4] = i;
-    display.digits[5] = i;
-    nixieDisplay( &display );
-    delay(1000);
-  }
-  */
-  print("%s%s", "OK", CFG_PRINTF_NEWLINE);
+    for(uint8_t i = 0; i < 10; i++)
+    {
+      display.digits[0] = i;
+      display.digits[1] = i;
+      display.digits[2] = i;
+      display.digits[3] = i;
+      display.digits[4] = i;
+      display.digits[5] = i;
+      nixieDisplay( &display );
+      delay(1000);
+    }
+    */
+    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
 
 void cmd_nixie_set_type(uint8_t argc, char **argv)
 {
-  char* end;
-  int32_t mapping = strtol(argv[1], &end, 10);
+    char* end;
+    int32_t mapping = strtol(argv[1], &end, 10);
 
-  /* Make sure values are valid */
-  if ((mapping < 0) || (mapping >= NIXIE_TYPE_END))
-  {
-    print("%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
-    return;
-  }
+    /* Make sure values are valid */
+    if ((mapping < 0) || (mapping >= NIXIE_TYPE_END))
+    {
+        print("%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
+        return;
+    }
 
-  nixieMapping_t m = mapping;
-  nixieStoreMapping(m);
-  nixieSetMapping(m);
+    nixieMapping_t m = mapping;
+    nixieStoreMapping(m);
+    nixieSetMapping(m);
 }
 
 void cmd_nixie_get_type(uint8_t argc, char **argv)
 {
-  nixieMapping_t m = nixieGetMapping();
-  print("%s: %02d%s", "TYPE", m, CFG_PRINTF_NEWLINE);
+    nixieMapping_t m = nixieGetMapping();
+    print("%s: %02d%s", "TYPE", m, CFG_PRINTF_NEWLINE);
 }
 
 void cmd_nixie_set_mode(uint8_t argc, char **argv)
 {
-  char* end;
-  int32_t mode = strtol(argv[1], &end, 10);
+    char* end;
+    int32_t mode = strtol(argv[1], &end, 10);
 
-  /* Make sure values are valid */
-  if ((mode < 0) || (mode >= nclock_mode_end))
-  {
-    print("%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
-    return;
-  }
+    /* Make sure values are valid */
+    if ((mode < 0) || (mode >= NIXIECLOCK_MODE_END))
+    {
+        print("%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
+        return;
+    }
 
-  nclock_mode_t m = mode;
-  nixieClockStoreMode(m);
-  nixieClockSetMode(m);
+    nixieclockMode_t m = mode;
+    nixieclockStoreMode(m);
+    nixieclockSetMode(m);
 }
 
 void cmd_nixie_get_mode(uint8_t argc, char **argv)
 {
-  nclock_mode_t m = nixieClockGetMode();
-  print("%s: %02d%s", "MODE", m, CFG_PRINTF_NEWLINE);
+    nixieclockMode_t m = nixieclockGetMode();
+    print("%s: %02d%s", "MODE", m, CFG_PRINTF_NEWLINE);
 }
 
 #endif

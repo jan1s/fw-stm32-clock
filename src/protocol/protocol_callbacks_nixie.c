@@ -4,7 +4,7 @@
 
 #include "protocol/protocol.h"
 #include "nixie/nixie.h"
-#include "nixie/nixie_clock.h"
+#include "nixie/nixieclock.h"
 
 #include "timer.h"
 #include <string.h>
@@ -26,16 +26,16 @@ void protocolMsgPollCallbackNixTyp(void)
 
 void protocolMsgCallbackNixMod(protocolMsgNixMod_t *mod)
 {
-    nclock_mode_t m = mod->mode;
-    nixieClockStoreMode(m);
-    nixieClockSetMode(m);
+    nixieclockMode_t m = mod->mode;
+    nixieclockStoreMode(m);
+    nixieclockSetMode(m);
     protocolReplyPacket(PROTOCOL_MSG_ID_NIX_MOD);
 }
 
 void protocolMsgPollCallbackNixMod(void)
 {
     protocolMsgNixMod_t mod;
-    mod.mode = nixieClockGetMode();
+    mod.mode = nixieclockGetMode();
     protocolMsgSendNixMod(&mod);
 }
 

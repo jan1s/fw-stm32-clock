@@ -7,7 +7,7 @@
 
 #ifdef CFG_NIXIE
 #include "nixie/nixie.h"
-#include "nixie/nixie_clock.h"
+#include "nixie/nixieclock.h"
 #endif
 
 #include "rtc/rtc.h"
@@ -29,7 +29,7 @@ void clockInit()
 
 #ifdef CFG_NIXIE
     nixieInit();
-    nixieClockInit();
+    nixieclockInit();
 #endif
 }
 
@@ -50,7 +50,7 @@ void clockPoll()
 #endif
 
 #ifdef CFG_NIXIE
-        nixieClockShowTime(local);
+        nixieclockShowTime(local);
 #endif
     }
 }

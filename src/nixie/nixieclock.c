@@ -3,25 +3,25 @@
 #ifdef CFG_NIXIE
 
 #include "nixie/nixie.h"
-#include "nixie/nixie_clock.h"
+#include "nixie/nixieclock.h"
 #include "rtc/rtc.h"
 #include "rtc/rtc_functions.h"
 
 #include <stdio.h>
 #include <string.h>
 
-nclock_mode_t nixieClockMode;
+nixieclockMode_t nixieclockMode;
 
 
-void nixieClockInit()
+void nixieclockInit()
 {
-    nixieClockMode = nixieClockLoadMode();
+    nixieclockMode = nixieclockLoadMode();
 
     nixieInit();
     nixieHighVoltageEnable();
 }
 
-void nixieClockStoreMode( const nclock_mode_t m )
+void nixieclockStoreMode( const nixieclockMode_t m )
 {
     /* Enable PWR and BKP clocks */
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
@@ -41,26 +41,26 @@ void nixieClockStoreMode( const nclock_mode_t m )
     PWR_BackupAccessCmd(DISABLE);
 }
 
-nclock_mode_t nixieClockLoadMode()
+nixieclockMode_t nixieclockLoadMode()
 {
     return (BKP_ReadBackupRegister(BKP_DR4) & 0xFF);
 }
 
-void nixieClockSetMode( const nclock_mode_t m )
+void nixieclockSetMode( const nixieclockMode_t m )
 {
-    nixieClockMode = m;
+    nixieclockMode = m;
 }
 
-nclock_mode_t nixieClockGetMode( void )
+nixieclockMode_t nixieclockGetMode( void )
 {
-    return nixieClockMode;
+    return nixieclockMode;
 }
 
-void nixieClockShowTime(rtcTime_t t)
+void nixieclockShowTime(rtcTime_t t)
 {
-    switch(nixieClockMode)
+    switch(nixieclockMode)
     {
-    case nclock_mode_inactive:
+    case NIXIECLOCK_MODE_NONE:
     {
         nixieDisplay4t_t d;
         d.digits[3] = 1;
@@ -73,7 +73,7 @@ void nixieClockShowTime(rtcTime_t t)
     }
     break;
 
-    case nclock_mode_hhmm:
+    case NIXIECLOCK_MODE_HHMM:
     {
         nixieDisplay4t_t d;
         d.digits[3] = t.hours / 10;
@@ -86,7 +86,7 @@ void nixieClockShowTime(rtcTime_t t)
     }
     break;
 
-    case nclock_mode_mmss:
+    case NIXIECLOCK_MODE_MMSS:
     {
         nixieDisplay4t_t d;
         d.digits[3] = t.minutes / 10;
@@ -99,7 +99,7 @@ void nixieClockShowTime(rtcTime_t t)
     }
     break;
 
-    case nclock_mode_yyyy:
+    case NIXIECLOCK_MODE_YYYY:
     {
         nixieDisplay4t_t d;
         uint16_t year = t.years + 1900;
@@ -113,7 +113,7 @@ void nixieClockShowTime(rtcTime_t t)
     }
     break;
 
-    case nclock_mode_hhmmss:
+    case NIXIECLOCK_MODE_HHMMSS:
     {
         nixieDisplay6t_t d;
         d.digits[5] = t.hours / 10;
@@ -127,6 +127,9 @@ void nixieClockShowTime(rtcTime_t t)
         nixieDisplay6t(&d);
     }
     break;
+
+    default:
+        break;
     }
 }
 

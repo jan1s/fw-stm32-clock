@@ -118,40 +118,40 @@ void cmd_tz_write(uint8_t argc, char **argv)
 
 void cmd_tz_read(uint8_t argc, char **argv)
 {
-	bool isStd = false;
-	bool isDst = false;
+    bool isStd = false;
+    bool isDst = false;
 
-	if(argc == 1)
-	{
-		if(strncmp(argv[0], "std", 3) == 0)
-		{
-			isStd = true;
-		}
-		else if(strncmp(argv[0], "dst", 3) == 0)
-		{
-			isDst = true;
-		}
-		else
-		{
-			print("%s%s", "Must be either STD or DST", CFG_PRINTF_NEWLINE);
-			return;
-		}
-	}
-	else
-	{
-		isStd = true;
-		isDst = true;
-	}
+    if(argc == 1)
+    {
+        if(strncmp(argv[0], "std", 3) == 0)
+        {
+            isStd = true;
+        }
+        else if(strncmp(argv[0], "dst", 3) == 0)
+        {
+            isDst = true;
+        }
+        else
+        {
+            print("%s%s", "Must be either STD or DST", CFG_PRINTF_NEWLINE);
+            return;
+        }
+    }
+    else
+    {
+        isStd = true;
+        isDst = true;
+    }
 
     tzRule_t r;
     if(isStd)
     {
-    	tzGetSTD(&r);
-    	print("%s: %04d %02d %01d %02d %02d%s", "STD", r.offset, r.hour, r.dow, r.week, r.month, CFG_PRINTF_NEWLINE);
+        tzGetSTD(&r);
+        print("%s: %04d %02d %01d %02d %02d%s", "STD", r.offset, r.hour, r.dow, r.week, r.month, CFG_PRINTF_NEWLINE);
     }
     if(isDst)
     {
-    	tzGetDST(&r);
-    	print("%s: %04d %02d %01d %02d %02d%s", "DST", r.offset, r.hour, r.dow, r.week, r.month, CFG_PRINTF_NEWLINE);
+        tzGetDST(&r);
+        print("%s: %04d %02d %01d %02d %02d%s", "DST", r.offset, r.hour, r.dow, r.week, r.month, CFG_PRINTF_NEWLINE);
     }
 }
