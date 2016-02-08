@@ -54,6 +54,23 @@ void cmd_sysinfo(uint8_t argc, char **argv);
 
 void cmd_rtc_read(uint8_t argc, char **argv);
 void cmd_rtc_write(uint8_t argc, char **argv);
+void cmd_tz_read(uint8_t argc, char **argv);
+void cmd_tz_write(uint8_t argc, char **argv);
+
+void cmd_clock_set_source(uint8_t argc, char **argv);
+void cmd_clock_get_source(uint8_t argc, char **argv);
+
+#ifdef CFG_NIXIE
+void cmd_nixie_test(uint8_t argc, char **argv);
+void cmd_nixie_set_type(uint8_t argc, char **argv);
+void cmd_nixie_get_type(uint8_t argc, char **argv);
+void cmd_nixie_set_mode(uint8_t argc, char **argv);
+void cmd_nixie_get_mode(uint8_t argc, char **argv);
+#endif
+
+#ifdef CFG_FLIPDOT
+#endif
+
 
 /**************************************************************************/
 /*!
@@ -67,10 +84,23 @@ void cmd_rtc_write(uint8_t argc, char **argv);
 cli_t cli_tbl[] =
 {
     // command name, min args, max args, hidden, function name, command description, syntax
-    { "?",            0,  0,  0, cmd_help                                   , "Help"                              , CMD_NOPARAMS },
-    { "V",            0,  0,  0, cmd_sysinfo                                , "System Info"                       , CMD_NOPARAMS },
-    { "tr",           0, 0,  0, cmd_rtc_read                                , "RTC read"                           , CMD_NOPARAMS },
-    { "tw",           6, 7,  0, cmd_rtc_write                               , "RTC write"                          , "'tw <yr> <mon> <day> <hr> <min> <sec>'" },
+    { "?",                 0,  0,  0, cmd_help                                   , "Help"                              , CMD_NOPARAMS },
+    { "V",                 0,  0,  0, cmd_sysinfo                                , "System Info"                       , CMD_NOPARAMS },
+    { "rtc_read",          0,  0,  0, cmd_rtc_read                               , "RTC read"                          , CMD_NOPARAMS },
+    { "rtc_write",         6,  7,  0, cmd_rtc_write                              , "RTC write"                         , "'rtc_write <yr> <mon> <day> <hr> <min> <sec>'" },
+    { "tz_read",           0,  1,  0, cmd_tz_read                                , "TZ read"                           , "'tz_read [std|dst]'" },
+    { "tz_write",          6,  6,  0, cmd_tz_write                               , "TZ write"                          , "'tz_write (std|dst) <offset> <hour> <dow> <week> <month>'" },
+    { "clk_setsrc",        1,  1,  0, cmd_clock_set_source                       , "Clock set source"                  , "'clk_setsrc <source(0=NONE|1=DCF77|2=GPS)>'" },
+    { "clk_getsrc",        0,  0,  0, cmd_clock_get_source                       , "Clock get source"                  , CMD_NOPARAMS },
+#ifdef CFG_NIXIE
+    { "nixie_test",        0,  1,  0, cmd_nixie_test                             , "Nixie test"                        , CMD_NOPARAMS },
+    { "nixie_settype",     1,  1,  0, cmd_nixie_set_type                         , "Nixie set type"                    , "'nixie_settype <type(0-4)>'" },
+    { "nixie_gettype",     0,  0,  0, cmd_nixie_get_type                         , "Nixie get type"                    , CMD_NOPARAMS },
+    { "nixie_setmode",     1,  1,  0, cmd_nixie_set_mode                         , "Nixie set mode"                    , "'nixie_setmode <mode(0=NONE|1=HHMMSS|2=HHMM|3=MMSS|4=YYYY)>'" },
+    { "nixie_getmode",     0,  0,  0, cmd_nixie_get_mode                         , "Nixie get mode"                    , CMD_NOPARAMS },
+#endif
+#ifdef CFG_FLIPDOT
+#endif
 };
 
 #endif

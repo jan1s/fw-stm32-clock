@@ -18,8 +18,8 @@ typedef struct tzRule_st
 {
     uint8_t hour;
     uint8_t dow;
-    uint8_t week;   /**< Zero-based, first day of week = Monday (use rtcWeekdays_t) */
-    uint8_t month;     /**< One-based (use rtcMonths_t) */
+    uint8_t week;    /**< Zero-based, first day of week = Monday (use rtcWeekdays_t) */
+    uint8_t month;   /**< One-based (use rtcMonths_t) */
     int16_t offset;
 } tzRule_t;
 

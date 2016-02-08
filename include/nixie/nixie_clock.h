@@ -7,10 +7,11 @@
 typedef enum
 {
     nclock_mode_inactive,
+    nclock_mode_hhmmss,
     nclock_mode_hhmm,
     nclock_mode_mmss,
     nclock_mode_yyyy,
-    nclock_mode_hhmmss
+    nclock_mode_end
 } nclock_mode_t;
 
 extern nclock_mode_t nixieClockMode;

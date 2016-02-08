@@ -70,6 +70,8 @@
 #endif
 
 
+#define KEY_CODE_BS         (8)     /* Backspace key code */
+#define KEY_CODE_DEL        (127)   /* Delete key code */
 #define KEY_CODE_ESC        (27)    /* Escape key code */
 #define KEY_CODE_ENTER      (13)    /* Enter key code  */
 
@@ -152,19 +154,43 @@ void cliRx(uint8_t c)
         if (cli_buffer_ptr == cli_buffer)
         {
             // Send bell alert and space (to maintain position)
-            print("\a ");
+            print("\a");
         }
         else if (cli_buffer_ptr > cli_buffer)
         {
             cli_buffer_ptr--;
+#if CFG_INTERFACE_SILENTMODE == 0
+            print("\b \b");
+#endif
+        }
+        break;
+
+    case 127:
+#if CFG_INTERFACE_SILENTMODE == 0
+        print("%c", c);
+#endif
+        if (cli_buffer_ptr == cli_buffer)
+        {
+            // Send bell alert and space (to maintain position)
+            print("\a");
+        }
+        else if (cli_buffer_ptr > cli_buffer)
+        {
+            cli_buffer_ptr--;
+#if CFG_INTERFACE_SILENTMODE == 0
+            print("\b \b");
+#endif
         }
         break;
 
     default:
+        if (cli_buffer_ptr < cli_buffer + CFG_INTERFACE_MAXMSGSIZE - 2)
+        {
 #if CFG_INTERFACE_SILENTMODE == 0
-        print("%c", c);
+            print("%c", c);
 #endif
-        *cli_buffer_ptr++ = c;
+            *cli_buffer_ptr++ = c;
+        }
         break;
     }
 }
