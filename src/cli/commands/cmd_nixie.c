@@ -74,7 +74,7 @@ void cmd_nixie_test(uint8_t argc, char **argv)
 void cmd_nixie_set_type(uint8_t argc, char **argv)
 {
     char* end;
-    int32_t mapping = strtol(argv[1], &end, 10);
+    int32_t mapping = strtol(argv[0], &end, 10);
 
     /* Make sure values are valid */
     if ((mapping < 0) || (mapping >= NIXIE_TYPE_END))
@@ -86,6 +86,7 @@ void cmd_nixie_set_type(uint8_t argc, char **argv)
     nixieMapping_t m = mapping;
     nixieStoreMapping(m);
     nixieSetMapping(m);
+    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
 void cmd_nixie_get_type(uint8_t argc, char **argv)
@@ -97,7 +98,7 @@ void cmd_nixie_get_type(uint8_t argc, char **argv)
 void cmd_nixie_set_mode(uint8_t argc, char **argv)
 {
     char* end;
-    int32_t mode = strtol(argv[1], &end, 10);
+    int32_t mode = strtol(argv[0], &end, 10);
 
     /* Make sure values are valid */
     if ((mode < 0) || (mode >= NIXIECLOCK_MODE_END))
@@ -109,6 +110,7 @@ void cmd_nixie_set_mode(uint8_t argc, char **argv)
     nixieclockMode_t m = mode;
     nixieclockStoreMode(m);
     nixieclockSetMode(m);
+    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
 void cmd_nixie_get_mode(uint8_t argc, char **argv)

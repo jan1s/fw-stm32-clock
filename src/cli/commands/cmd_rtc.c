@@ -100,6 +100,7 @@ void cmd_rtc_write(uint8_t argc, char **argv)
     /* Write the time to the RTC */
     uint32_t epoch = rtcToEpochTime (&t);
     rtcSet(epoch);
+    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
 void cmd_rtc_read(uint8_t argc, char **argv)

@@ -114,6 +114,7 @@ void cmd_tz_write(uint8_t argc, char **argv)
         tzStoreDST(&r);
         tzSetDST(&r);
     }
+    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
 void cmd_tz_read(uint8_t argc, char **argv)

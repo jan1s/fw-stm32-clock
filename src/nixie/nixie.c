@@ -85,7 +85,7 @@ void nixieStoreMapping( const nixieMapping_t m )
     bkp |= (m << 8);
 
     /* Write to the BKP Domain */
-    BKP_WriteBackupRegister(BKP_DR4, m & 0xFF);
+    BKP_WriteBackupRegister(BKP_DR4, bkp);
 
     /* Deny access to BKP Domain */
     PWR_BackupAccessCmd(DISABLE);
