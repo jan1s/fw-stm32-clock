@@ -26,7 +26,9 @@ The timezone can be set with the `tz_write` command.
 - month  (month in year, 1=january ... 12=december)
 
 For Germany just type:
+
 `tz_write std 60 3 6 0 10`
+
 `tz_write dst 120 2 6 0 3`
 
 Most common Daylight Saving Time rules:
