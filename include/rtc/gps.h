@@ -38,11 +38,7 @@
 #ifndef __GPS_H__
 #define __GPS_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include "projectconfig.h"
+#include "platform_config.h"
 #include "rtc/rtc.h"
 
 typedef struct
@@ -60,9 +56,5 @@ error_t gpsTime(rtcTime_t *utc);
 void gpsPoll(void);
 void gpsRx(uint8_t c);
 bool nmeaParse(char *cmd);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

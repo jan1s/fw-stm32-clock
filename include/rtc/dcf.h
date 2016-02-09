@@ -39,20 +39,12 @@
 #ifndef __DCF_H__
 #define __DCF_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include "projectconfig.h"
+#include "platform_config.h"
 #include "rtc/rtc.h"
 
 void dcfInit(void);
 void dcfSetCallback(void(*pFunc)(void));
 error_t dcfTime(rtcTime_t *utc);
 void dcfPoll(void);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
