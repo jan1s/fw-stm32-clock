@@ -7,12 +7,12 @@
 #include <string.h>
 #include <stdarg.h>
 
-void print(const char *format, ...)
+void print(void (*send)(uint8_t *,uint32_t), const char *format, ...)
 {
     char buffer[256];
     va_list args;
     va_start (args, format);
     vsnprintf(buffer, 255, format, args);
-    uart1Send((uint8_t*)buffer, strlen(buffer));
+    (*send)((uint8_t*)buffer, strlen(buffer));
     va_end(args);
 }

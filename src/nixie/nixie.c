@@ -21,10 +21,9 @@ void nixieInit()
     /* GPIOA, GPIOB and SPI1 clock enable */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | RCC_APB2Periph_SPI1, ENABLE);
 
-    GPIO_InitTypeDef GPIO_InitStructure;
-
     /* Configure SPI1 pins: SCK, MISO and MOSI ---------------------------------*/
     /* Confugure SCK and MOSI pins as Alternate Function Push Pull */
+    GPIO_InitTypeDef GPIO_InitStructure;
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_7;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
@@ -35,22 +34,11 @@ void nixieInit()
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
-
     GPIO_ResetBits((GPIO_TypeDef *)GPIOA_BASE, 1 << CFG_NIXIE_SREN_PIN);
     GPIO_ResetBits((GPIO_TypeDef *)GPIOA_BASE, 1 << CFG_NIXIE_RCK_PIN);
 
-    /* Enable HVEN */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-    GPIO_ResetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << CFG_NIXIE_HVEN_PIN);
-
-
-    SPI_InitTypeDef  SPI_InitStructure;
-
     /* SPI1 configuration ------------------------------------------------------*/
+    SPI_InitTypeDef  SPI_InitStructure;
     SPI_InitStructure.SPI_Direction = SPI_Direction_1Line_Tx;
     SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
     SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
@@ -64,6 +52,14 @@ void nixieInit()
 
     /* Enable SPI1 */
     SPI_Cmd(SPI1, ENABLE);
+
+
+    /* Enable HVEN */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_ResetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << CFG_NIXIE_HVEN_PIN);
 
     /* Get Mapping */
     mapping = nixieLoadMapping();

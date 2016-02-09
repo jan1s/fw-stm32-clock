@@ -45,9 +45,7 @@
 
 #include "gps.h"
 
-#ifdef CFG_GPS_UART
-#include "core/uart/uart.h"
-#endif
+
 
 #if CFG_GPS_INT_ENABLE == 1
 #include "core/gpio/gpio.h"
@@ -69,20 +67,7 @@ static void (*_gpsCallback)(void) = NULL;
 /**************************************************************************/
 void gpsInit()
 {
-#if defined CFG_GPS && defined CFG_GPS_UART
-    LPC_IOCON->PIO1_13        = 0x3;            // RXD
-    LPC_IOCON->PIO1_14        = 0x3;            // TXD
 
-    // Check if UART is already initialised
-    uart_pcb_t *pcb = uartGetPCB();
-    if (!pcb->initialised)
-    {
-        uartInit(CFG_UART_BAUDRATE);
-    }
-#endif
-
-    /* INT is open drain so we need to enable the pullup on the pin */
-    LPC_IOCON->TRST_PIO0_14 = (0 << 0) | (2 << 3) | (1 << 7);
 
     /* Init the gps_buffer ptr */
     gps_buffer_ptr = gps_buffer;

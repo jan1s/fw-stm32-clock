@@ -59,15 +59,8 @@
 #include "cli/cli.h"
 #include "cli/cli_tbl.h"
 #include "print.h"
-
-
-#ifdef CFG_INTERFACE_USART1
 #include "uart.h"
-#endif
-
-#ifdef CFG_INTERFACE_USBCDC
 #include "usb_cdc.h"
-#endif
 
 
 #define KEY_CODE_BS         (8)     /* Backspace key code */
@@ -76,26 +69,47 @@
 #define KEY_CODE_ENTER      (13)    /* Enter key code  */
 
 
-static uint8_t cli_buffer[CFG_INTERFACE_MAXMSGSIZE];
-static uint8_t *cli_buffer_ptr;
+static uint8_t cli_buffer[CLI_END][CFG_INTERFACE_MAXMSGSIZE];
+static uint8_t *cli_buffer_ptr[CLI_END];
+void (*cli_send[CLI_END]) (uint8_t *,uint32_t);
 
-static void cliMenu();
+static void cliMenu(cli_select_t t);
 
 /**************************************************************************/
 /*!
     @brief Initialises the command line using the appropriate interface
 */
 /**************************************************************************/
-void cliInit()
+void cliInit(cli_select_t t)
 {
-    // Init USART1
-    uart1Init();
+	switch(t)
+	{
+	case CLI_USBCDC:
+		{
+			USB_CDC_Init();
+			cli_send[t] = USB_CDC_SendBuffer;
+		}
+		break;
 
-    // init the cli_buffer ptr
-    cli_buffer_ptr = cli_buffer;
+	case CLI_USART1:
+		{
+			uart1Init();
+			cli_send[t] = uart1Send;
+		}
+		break;
+
+	case CLI_USART2:
+		{
+			//uart2Init();
+			//cli_send[t] = uart2Send;
+		}
+		break;
+	}
+
+	cli_buffer_ptr[t] = cli_buffer[t];
 
     // Show the menu
-    cliMenu();
+    cliMenu(t);
 }
 
 /**************************************************************************/
@@ -104,15 +118,41 @@ void cliInit()
             is waiting to be processed.
 */
 /**************************************************************************/
-void cliPoll()
+void cliPoll(cli_select_t t)
 {
-#ifdef CFG_INTERFACE_USART1
-    uint8_t c;
-    while (uart1ReadChar(&c))
-    {
-        cliRx(c);
-    }
-#endif
+	uint8_t c;
+
+	switch(t)
+	{
+	case CLI_USBCDC:
+		{
+			while (USB_CDC_Read(&c))
+			{
+				cliRx(t, c);
+			}
+		}
+		break;
+
+	case CLI_USART1:
+		{
+			while (uart1ReadChar(&c))
+			{
+				cliRx(t, c);
+			}
+		}
+		break;
+
+	case CLI_USART2:
+		{
+			//while (uart2ReadChar(&c))
+			//{
+			//	cliRx(t, c);
+			//}
+		}
+		break;
+	}
+
+
 }
 
 /**************************************************************************/
@@ -127,7 +167,7 @@ void cliPoll()
                 The character to parse.
 */
 /**************************************************************************/
-void cliRx(uint8_t c)
+void cliRx(cli_select_t t, uint8_t c)
 {
     // read out the data in the buffer and echo it back to the host.
     switch (c)
@@ -139,57 +179,57 @@ void cliRx(uint8_t c)
     case '\n':
         // terminate the cli_buffer and reset the cli_buffer ptr. then send
         // it to the handler for processing.
-        *cli_buffer_ptr = '\0';
+        *cli_buffer_ptr[t] = '\0';
 #if CFG_INTERFACE_SILENTMODE == 0
-        print("%s", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s", CFG_PRINTF_NEWLINE);
 #endif
-        cliParse((char *)cli_buffer);
-        cli_buffer_ptr = cli_buffer;
+        cliParse(t, (char *)cli_buffer);
+        cli_buffer_ptr[t] = cli_buffer[t];
         break;
 
     case '\b':
 #if CFG_INTERFACE_SILENTMODE == 0
-        print("%c", c);
+        print(cli_send[t], "%c", c);
 #endif
-        if (cli_buffer_ptr == cli_buffer)
+        if (cli_buffer_ptr[t] == cli_buffer[t])
         {
             // Send bell alert and space (to maintain position)
-            print("\a");
+            print(cli_send[t], "\a");
         }
-        else if (cli_buffer_ptr > cli_buffer)
+        else if (cli_buffer_ptr[t] > cli_buffer[t])
         {
-            cli_buffer_ptr--;
+            cli_buffer_ptr[t]--;
 #if CFG_INTERFACE_SILENTMODE == 0
-            print("\b \b");
+            print(cli_send[t], "\b \b");
 #endif
         }
         break;
 
     case 127:
 #if CFG_INTERFACE_SILENTMODE == 0
-        print("%c", c);
+        print(cli_send[t], "%c", c);
 #endif
-        if (cli_buffer_ptr == cli_buffer)
+        if (cli_buffer_ptr[t] == cli_buffer[t])
         {
             // Send bell alert and space (to maintain position)
-            print("\a");
+            print(cli_send[t], "\a");
         }
-        else if (cli_buffer_ptr > cli_buffer)
+        else if (cli_buffer_ptr[t] > cli_buffer[t])
         {
-            cli_buffer_ptr--;
+            cli_buffer_ptr[t]--;
 #if CFG_INTERFACE_SILENTMODE == 0
-            print("\b \b");
+            print(cli_send[t], "\b \b");
 #endif
         }
         break;
 
     default:
-        if (cli_buffer_ptr < cli_buffer + CFG_INTERFACE_MAXMSGSIZE - 2)
+        if (cli_buffer_ptr[t] < cli_buffer[t] + CFG_INTERFACE_MAXMSGSIZE - 2)
         {
 #if CFG_INTERFACE_SILENTMODE == 0
-            print("%c", c);
+            print(cli_send[t], "%c", c);
 #endif
-            *cli_buffer_ptr++ = c;
+            *cli_buffer_ptr[t]++ = c;
         }
         break;
     }
@@ -201,14 +241,14 @@ void cliRx(uint8_t c)
             in projectconfig.h.
 */
 /**************************************************************************/
-static void cliMenu()
+static void cliMenu(cli_select_t t)
 {
 #if CFG_INTERFACE_SILENTMODE == 0
-    print(CFG_PRINTF_NEWLINE);
-    print(CFG_INTERFACE_PROMPT);
+    print(cli_send[t], CFG_PRINTF_NEWLINE);
+    print(cli_send[t], CFG_INTERFACE_PROMPT);
 #endif
 #if CFG_INTERFACE_CONFIRMREADY == 1
-    print("%s%s", CFG_INTERFACE_CONFIRMREADY_TEXT, CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s%s", CFG_INTERFACE_CONFIRMREADY_TEXT, CFG_PRINTF_NEWLINE);
 #endif
 }
 
@@ -223,7 +263,7 @@ static void cliMenu()
                 The entire command string to be parsed
 */
 /**************************************************************************/
-void cliParse(char *cmd)
+void cliParse(cli_select_t t, char *cmd)
 {
     size_t argc, i = 0;
     char *argv[30];
@@ -243,39 +283,39 @@ void cliParse(char *cmd)
             if ((argc == 2) && !strcmp (argv [1], "?"))
             {
                 // Display parameter help menu on 'command ?'
-                print ("%s%s%s", cli_tbl[i].description, CFG_PRINTF_NEWLINE, CFG_PRINTF_NEWLINE);
-                print ("%s%s", cli_tbl[i].parameters, CFG_PRINTF_NEWLINE);
+                print (cli_send[t], "%s%s%s", cli_tbl[i].description, CFG_PRINTF_NEWLINE, CFG_PRINTF_NEWLINE);
+                print (cli_send[t], "%s%s", cli_tbl[i].parameters, CFG_PRINTF_NEWLINE);
             }
             else if ((argc - 1) < cli_tbl[i].minArgs)
             {
                 // Too few arguments supplied
-                print ("%s (%s %d)%s", "Too few arguments", "Expected", cli_tbl[i].minArgs, CFG_PRINTF_NEWLINE);
-                print ("%s'%s ?' %s%s%s", CFG_PRINTF_NEWLINE, cli_tbl[i].command, "for more information", CFG_PRINTF_NEWLINE, CFG_PRINTF_NEWLINE);
+                print (cli_send[t], "%s (%s %d)%s", "Too few arguments", "Expected", cli_tbl[i].minArgs, CFG_PRINTF_NEWLINE);
+                print (cli_send[t], "%s'%s ?' %s%s%s", CFG_PRINTF_NEWLINE, cli_tbl[i].command, "for more information", CFG_PRINTF_NEWLINE, CFG_PRINTF_NEWLINE);
             }
             else if ((argc - 1) > cli_tbl[i].maxArgs)
             {
                 // Too many arguments supplied
-                print ("%s (%s %d)%s", "Too many arguments", "Maximum", cli_tbl[i].maxArgs, CFG_PRINTF_NEWLINE);
-                print ("%s'%s ?' %s%s%s", CFG_PRINTF_NEWLINE, cli_tbl[i].command, "for more information", CFG_PRINTF_NEWLINE, CFG_PRINTF_NEWLINE);
+                print (cli_send[t], "%s (%s %d)%s", "Too many arguments", "Maximum", cli_tbl[i].maxArgs, CFG_PRINTF_NEWLINE);
+                print (cli_send[t], "%s'%s ?' %s%s%s", CFG_PRINTF_NEWLINE, cli_tbl[i].command, "for more information", CFG_PRINTF_NEWLINE, CFG_PRINTF_NEWLINE);
             }
             else
             {
                 // Dispatch command to the appropriate function
-                cli_tbl[i].func(argc - 1, &argv [1]);
+                cli_tbl[i].func(t, argc - 1, &argv [1]);
             }
 
             // Refresh the command prompt
-            cliMenu();
+            cliMenu(t);
             return;
         }
     }
     // Command not recognized
-    print("%s: '%s'%s%s", "Command Not Recognised", cmd, CFG_PRINTF_NEWLINE, CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s: '%s'%s%s", "Command Not Recognised", cmd, CFG_PRINTF_NEWLINE, CFG_PRINTF_NEWLINE);
 #if CFG_INTERFACE_SILENTMODE == 0
-    print("%s%s", "Type '?' for a list of all available commands", CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s%s", "Type '?' for a list of all available commands", CFG_PRINTF_NEWLINE);
 #endif
 
-    cliMenu();
+    cliMenu(t);
 }
 
 
@@ -285,21 +325,21 @@ void cliParse(char *cmd)
     'help' command handler
 */
 /**************************************************************************/
-void cmd_help(uint8_t argc, char **argv)
+void cmd_help(cli_select_t t, uint8_t argc, char **argv)
 {
     size_t i;
 
-    print("%s      %s%s", "Command", "Description", CFG_PRINTF_NEWLINE);
-    print("-------      -----------%s", CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s      %s%s", "Command", "Description", CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "-------      -----------%s", CFG_PRINTF_NEWLINE);
 
     // Display full command list
     for (i = 0; i < CMD_COUNT; i++)
     {
         if (!cli_tbl[i].hidden)
         {
-            print("%-10s   %s%s", cli_tbl[i].command, cli_tbl[i].description, CFG_PRINTF_NEWLINE);
+            print(cli_send[t], "%-10s   %s%s", cli_tbl[i].command, cli_tbl[i].description, CFG_PRINTF_NEWLINE);
         }
     }
 
-    print("%s%s", "Command parameters can be seen by entering: <command-name> ?", CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s%s", "Command parameters can be seen by entering: <command-name> ?", CFG_PRINTF_NEWLINE);
 }

@@ -40,6 +40,7 @@
 #include "platform_config.h"
 
 #include "rtc/tz.h"
+#include "cli/cli.h"
 #include "print.h"
 
 #include <stdio.h>
@@ -47,7 +48,7 @@
 #include <string.h>
 
 
-void cmd_tz_write(uint8_t argc, char **argv)
+void cmd_tz_write(cli_select_t t, uint8_t argc, char **argv)
 {
     bool isStd = false;
     bool isDst = false;
@@ -61,7 +62,7 @@ void cmd_tz_write(uint8_t argc, char **argv)
     }
     else
     {
-        print("%s%s", "Must be either STD or DST", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Must be either STD or DST", CFG_PRINTF_NEWLINE);
         return;
     }
 
@@ -75,27 +76,27 @@ void cmd_tz_write(uint8_t argc, char **argv)
     /* Make sure values are valid */
     if ((offset < -1440) || (offset > 1440))
     {
-        print("%s%s", "Offset must be between -1440 and 1440 minutes", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Offset must be between -1440 and 1440 minutes", CFG_PRINTF_NEWLINE);
         return;
     }
     if ((hour < 0) || (hour > 23))
     {
-        print("%s%s", "Hour must be between 0 and 23", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Hour must be between 0 and 23", CFG_PRINTF_NEWLINE);
         return;
     }
     if ((dow < 0) || (dow > 6))
     {
-        print("%s%s", "Day of week must be between 0 and 6", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Day of week must be between 0 and 6", CFG_PRINTF_NEWLINE);
         return;
     }
     if ((week < 0) || (week > 4))
     {
-        print("%s%s", "Week must be between 0 and 4", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Week must be between 0 and 4", CFG_PRINTF_NEWLINE);
         return;
     }
     if ((month < 0) || (month > 12))
     {
-        print("%s%s", "Month must be between 0 and 12", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Month must be between 0 and 12", CFG_PRINTF_NEWLINE);
         return;
     }
 
@@ -114,10 +115,10 @@ void cmd_tz_write(uint8_t argc, char **argv)
         tzStoreDST(&r);
         tzSetDST(&r);
     }
-    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
-void cmd_tz_read(uint8_t argc, char **argv)
+void cmd_tz_read(cli_select_t t, uint8_t argc, char **argv)
 {
     bool isStd = false;
     bool isDst = false;
@@ -134,7 +135,7 @@ void cmd_tz_read(uint8_t argc, char **argv)
         }
         else
         {
-            print("%s%s", "Must be either STD or DST", CFG_PRINTF_NEWLINE);
+            print(cli_send[t], "%s%s", "Must be either STD or DST", CFG_PRINTF_NEWLINE);
             return;
         }
     }
@@ -148,11 +149,11 @@ void cmd_tz_read(uint8_t argc, char **argv)
     if(isStd)
     {
         tzGetSTD(&r);
-        print("%s: %04d %02d %01d %02d %02d%s", "STD", r.offset, r.hour, r.dow, r.week, r.month, CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s: %04d %02d %01d %02d %02d%s", "STD", r.offset, r.hour, r.dow, r.week, r.month, CFG_PRINTF_NEWLINE);
     }
     if(isDst)
     {
         tzGetDST(&r);
-        print("%s: %04d %02d %01d %02d %02d%s", "DST", r.offset, r.hour, r.dow, r.week, r.month, CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s: %04d %02d %01d %02d %02d%s", "DST", r.offset, r.hour, r.dow, r.week, r.month, CFG_PRINTF_NEWLINE);
     }
 }

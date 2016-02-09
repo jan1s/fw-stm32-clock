@@ -1,5 +1,7 @@
 #include "platform_config.h"
 
+#include "clock.h"
+
 #ifdef CFG_FLIPDOT
 #include "flipdot.h"
 #include "flipdot_clock.h"
@@ -47,6 +49,39 @@ clockSource_t clockLoadSource()
 void clockSetSource( const clockSource_t s )
 {
     clockSource = s;
+
+    switch(clockSource)
+    {
+        case CLOCK_SOURCE_NONE:
+        {
+
+        }
+        break;
+
+        case CLOCK_SOURCE_DCF77:
+        {
+            dcfInit();
+        }
+        break;
+
+        case CLOCK_SOURCE_GPS:
+        {
+            //gpsInit();
+        }
+        break;
+
+        case CLOCK_SOURCE_CLI:
+        {
+
+        }
+        break;
+
+        default:
+        {
+
+        }
+        break;
+    }
 }
 
 clockSource_t clockGetSource( void )
@@ -87,13 +122,13 @@ void clockPoll()
 
         case CLOCK_SOURCE_DCF77:
         {
-
+            dcfPoll();
         }
         break;
 
         case CLOCK_SOURCE_GPS:
         {
-
+            //gpsPoll();
         }
         break;
 

@@ -38,14 +38,12 @@
 
 #include "platform_config.h"
 
-#ifdef CFG_DCF
-
 #include <stdio.h>
+#include <stdbool.h>
 
-#include "dcf.h"
-#include "core/gpio/gpio.h"
-#include "core/delay/delay.h"
-
+#include "rtc/dcf.h"
+#include "led.h"
+#include "timer.h"
 
 typedef struct
 {
@@ -62,12 +60,12 @@ typedef struct
 
 static void (*_dcfCallback)(void) = NULL;
 
-static bool dcfInSync = false;
-static uint64_t dcfBitwurst = 0;
-static uint8_t dcfBitwurstIndex = 0;
+static bool dcfInSync;
+static uint64_t dcfBitwurst;
+static uint8_t dcfBitwurstIndex;
 
-static uint8_t pinState = 0;
-static uint32_t edgeTime = 0;
+static uint8_t pinState;
+static uint32_t edgeTime;
 
 static dcf_t dcf;
 
@@ -83,11 +81,23 @@ uint8_t dcfBCDToDec(uint8_t val);
 /**************************************************************************/
 void dcfInit()
 {
-    //LPC_IOCON->TRST_PIO0_14 = (0<<0) | (2<<3) | (1<<7);
-    LPC_IOCON->TRST_PIO0_14 = (1 << 0) | (0 << 3) | (1 << 7);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    
+    /* RX Pin */
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    /* Set interrupt/gpio pin to input */
-    LPC_GPIO->DIR[CFG_DCF_PORT] &= ~(1 << CFG_DCF_PIN);
+    dcfInSync = false;
+    dcfBitwurst = 0;
+    dcfBitwurstIndex = 0;
+
+    pinState = 0;
+    edgeTime = 0;
+
+    dcf.valid = false;
 }
 
 /**************************************************************************/
@@ -99,17 +109,17 @@ void dcfInit()
 /**************************************************************************/
 void dcfPoll()
 {
-    uint8_t pinStateNow = LPC_GPIO->B0[CFG_DCF_PIN];
+    uint8_t pinStateNow = GPIO_ReadInputDataBit((GPIO_TypeDef *)GPIOA_BASE, GPIO_Pin_10);
 
     /* Edge detection */
     if(pinStateNow != pinState)
     {
-        uint32_t edgeTimeNow = delayGetTicks();
+        uint32_t edgeTimeNow = timer_delayCount;
         uint32_t edgeTimeDiff = edgeTimeNow - edgeTime;
         /* Rising edge */
         if(pinStateNow != 0)
         {
-            LPC_GPIO->CLR[0] = (1 << 18);
+            led_usr_on();
 
             /* Detect minute sync */
             if((edgeTimeDiff < 2000) && (edgeTimeDiff > 1700))
@@ -144,7 +154,7 @@ void dcfPoll()
         /* Falling edge */
         else
         {
-            LPC_GPIO->SET[0] = (1 << 18);
+            led_usr_off();
 
             /* Only work on dcfBitwurst if sure where to work */
             if(dcfInSync)
@@ -215,7 +225,7 @@ bool dcfParse(uint64_t bitwurst)
     @brief  Returns the current time received by the DCF
 */
 /**************************************************************************/
-error_t dcfTime(rtcTime_t *utc)
+uint8_t dcfTime(rtcTime_t *local)
 {
     if(!dcf.valid)
     {
@@ -231,9 +241,9 @@ error_t dcfTime(rtcTime_t *utc)
     uint8_t second = dcf.second;
 
     /* ToDo: check for error */
-    ASSERT_STATUS(rtcCreateTime(year, month, day, hour, minute, second, 0, utc));
+    rtcCreateTime(year, month, day, hour, minute, second, 0, local);
 
-    return ERROR_NONE;
+    return 0;
 }
 
 /**************************************************************************/
@@ -272,6 +282,3 @@ void dcfSetCallback (void (*pFunc)(void))
 {
     _dcfCallback = pFunc;
 }
-
-
-#endif

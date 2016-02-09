@@ -49,23 +49,23 @@
 #define CMD_NOPARAMS ( "This command has no parameters" )
 
 /* Function prototypes for the command table */
-void cmd_help(uint8_t argc, char **argv);         /* handled by cli/cli.c */
-void cmd_sysinfo(uint8_t argc, char **argv);
+void cmd_help(cli_select_t t, uint8_t argc, char **argv);         /* handled by cli/cli.c */
+void cmd_sysinfo(cli_select_t t, uint8_t argc, char **argv);
 
-void cmd_rtc_read(uint8_t argc, char **argv);
-void cmd_rtc_write(uint8_t argc, char **argv);
-void cmd_tz_read(uint8_t argc, char **argv);
-void cmd_tz_write(uint8_t argc, char **argv);
+void cmd_rtc_read(cli_select_t t, uint8_t argc, char **argv);
+void cmd_rtc_write(cli_select_t t, uint8_t argc, char **argv);
+void cmd_tz_read(cli_select_t t, uint8_t argc, char **argv);
+void cmd_tz_write(cli_select_t t, uint8_t argc, char **argv);
 
-void cmd_clock_set_source(uint8_t argc, char **argv);
-void cmd_clock_get_source(uint8_t argc, char **argv);
+void cmd_clock_set_source(cli_select_t t, uint8_t argc, char **argv);
+void cmd_clock_get_source(cli_select_t t, uint8_t argc, char **argv);
 
 #ifdef CFG_NIXIE
-void cmd_nixie_test(uint8_t argc, char **argv);
-void cmd_nixie_set_type(uint8_t argc, char **argv);
-void cmd_nixie_get_type(uint8_t argc, char **argv);
-void cmd_nixie_set_mode(uint8_t argc, char **argv);
-void cmd_nixie_get_mode(uint8_t argc, char **argv);
+void cmd_nixie_test(cli_select_t t, uint8_t argc, char **argv);
+void cmd_nixie_set_type(cli_select_t t, uint8_t argc, char **argv);
+void cmd_nixie_get_type(cli_select_t t, uint8_t argc, char **argv);
+void cmd_nixie_set_mode(cli_select_t t, uint8_t argc, char **argv);
+void cmd_nixie_get_mode(cli_select_t t, uint8_t argc, char **argv);
 #endif
 
 #ifdef CFG_FLIPDOT

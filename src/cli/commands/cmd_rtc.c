@@ -41,12 +41,13 @@
 
 #include "rtc/rtc.h"
 #include "rtc/rtc_functions.h"
+#include "cli/cli.h"
 #include "print.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void cmd_rtc_write(uint8_t argc, char **argv)
+void cmd_rtc_write(cli_select_t t, uint8_t argc, char **argv)
 {
     char* end;
     int32_t year = strtol(argv[0], &end, 10);
@@ -59,56 +60,56 @@ void cmd_rtc_write(uint8_t argc, char **argv)
     /* Make sure values are valid */
     if ((year < 2000) || (year > 2038))
     {
-        print("%s%s", "Year must be between 2000 and 2023", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Year must be between 2000 and 2023", CFG_PRINTF_NEWLINE);
         return;
     }
     if ((month < RTC_MONTHS_JANUARY) || (month > RTC_MONTHS_DECEMBER))
     {
-        print("%s%s", "Month must be between 1 and 12", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Month must be between 1 and 12", CFG_PRINTF_NEWLINE);
         return;
     }
     if ((day < 1) || (day > 31))
     {
-        print("%s%s", "Day must be between 1 and 31", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Day must be between 1 and 31", CFG_PRINTF_NEWLINE);
         return;
     }
     if ((hour < 0) || (hour > 23))
     {
-        print("%s%s", "Hour must be between 0 and 23", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Hour must be between 0 and 23", CFG_PRINTF_NEWLINE);
         return;
     }
     if ((minute < 0) || (minute > 59))
     {
-        print("%s%s", "Minute must be between 0 and 59", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Minute must be between 0 and 59", CFG_PRINTF_NEWLINE);
         return;
     }
     if ((second < 0) || (second > 59))
     {
-        print("%s%s", "Second must be between 0 and 59", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Second must be between 0 and 59", CFG_PRINTF_NEWLINE);
         return;
     }
 
     /* Try to create a date */
-    rtcTime_t t;
-    uint8_t error = rtcCreateTime(year, month, day, hour, minute, second, 0, &t);
+    rtcTime_t rt;
+    uint8_t error = rtcCreateTime(year, month, day, hour, minute, second, 0, &rt);
     if (error)
     {
-        print("%s%s", "Invalid timestamp", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s%s", "Invalid timestamp", CFG_PRINTF_NEWLINE);
         return;
     }
 
     /* Write the time to the RTC */
-    uint32_t epoch = rtcToEpochTime (&t);
+    uint32_t epoch = rtcToEpochTime (&rt);
     rtcSet(epoch);
-    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
-void cmd_rtc_read(uint8_t argc, char **argv)
+void cmd_rtc_read(cli_select_t t, uint8_t argc, char **argv)
 {
     uint32_t epoch = rtcGet();
 
-    rtcTime_t t;
-    rtcCreateTimeFromEpoch(epoch, &t);
+    rtcTime_t rt;
+    rtcCreateTimeFromEpoch(epoch, &rt);
 
-    print("%s: %04d %02d %02d %02d %02d %02d%s", "UTC", t.years + 1900, t.months + 1, t.days, t.hours, t.minutes, t.seconds, CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s: %04d %02d %02d %02d %02d %02d%s", "UTC", rt.years + 1900, rt.months + 1, rt.days, rt.hours, rt.minutes, rt.seconds, CFG_PRINTF_NEWLINE);
 }

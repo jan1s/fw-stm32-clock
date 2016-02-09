@@ -4,9 +4,11 @@
 
 #include "led.h"
 #include "timer.h"
-#include "clock.h"
 #include "cli/cli.h"
+#include "clock.h"
 #include "protocol/protocol.h"
+#include "uart.h"
+
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -31,10 +33,11 @@ int main(void)
     timer_init();
 
     led_sys_on();
-    timer_sleep(10000);
+    timer_sleep(50000);
     led_sys_off();
 
-    cliInit();
+    cliInit(CLI_USBCDC);
+
     //protocolInit();
     clockInit();
 
@@ -42,7 +45,7 @@ int main(void)
     {
         //led_sys_on();
         //protocolPoll();
-        cliPoll();
+        cliPoll(CLI_USBCDC);
         //led_sys_off();
         clockPoll();
     }

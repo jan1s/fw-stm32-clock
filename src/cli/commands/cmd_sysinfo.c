@@ -42,7 +42,7 @@
 
 #include "platform_config.h"
 
-
+#include "cli/cli.h"
 #include "print.h"
 
 /**************************************************************************/
@@ -50,7 +50,7 @@
     'sysinfo' command handler
 */
 /**************************************************************************/
-void cmd_sysinfo(uint8_t argc, char **argv)
+void cmd_sysinfo(cli_select_t t, uint8_t argc, char **argv)
 {
-    print("Value of Pi = %d", 3);
+    print(cli_send[t], "Value of Pi = %d", 3);
 }

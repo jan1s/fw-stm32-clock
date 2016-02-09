@@ -54,20 +54,31 @@
 
 #include "platform_config.h"
 
+typedef enum
+{
+    CLI_USBCDC = 0,
+    CLI_USART0,
+    CLI_USART1,
+    CLI_USART2,
+    CLI_END
+} cli_select_t;
+
 typedef struct
 {
     char *command;
     uint8_t minArgs;
     uint8_t maxArgs;
     uint8_t hidden;
-    void (*func)(uint8_t argc, char **argv);
+    void (*func)(cli_select_t t, uint8_t argc, char **argv);
     const char *description;
     const char *parameters;
 } cli_t;
 
-void cliPoll(void);
-void cliRx(uint8_t c);
-void cliParse(char *cmd);
-void cliInit(void);
+extern void (*cli_send[CLI_END]) (uint8_t *,uint32_t);
+
+void cliPoll(cli_select_t t);
+void cliRx(cli_select_t t, uint8_t c);
+void cliParse(cli_select_t t, char *cmd);
+void cliInit(cli_select_t t);
 
 #endif

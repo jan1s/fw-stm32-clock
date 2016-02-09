@@ -43,6 +43,7 @@
 
 #include "nixie/nixie.h"
 #include "nixie/nixieclock.h"
+#include "cli/cli.h"
 #include "print.h"
 
 #include <stdio.h>
@@ -50,7 +51,7 @@
 #include <string.h>
 
 
-void cmd_nixie_test(uint8_t argc, char **argv)
+void cmd_nixie_test(cli_select_t t, uint8_t argc, char **argv)
 {
     /*
     nixieDisplay_t display;
@@ -67,11 +68,11 @@ void cmd_nixie_test(uint8_t argc, char **argv)
       delay(1000);
     }
     */
-    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
 
-void cmd_nixie_set_type(uint8_t argc, char **argv)
+void cmd_nixie_set_type(cli_select_t t, uint8_t argc, char **argv)
 {
     char* end;
     int32_t mapping = strtol(argv[0], &end, 10);
@@ -79,23 +80,23 @@ void cmd_nixie_set_type(uint8_t argc, char **argv)
     /* Make sure values are valid */
     if ((mapping < 0) || (mapping >= NIXIE_TYPE_END))
     {
-        print("%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
         return;
     }
 
     nixieMapping_t m = mapping;
     nixieStoreMapping(m);
     nixieSetMapping(m);
-    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
-void cmd_nixie_get_type(uint8_t argc, char **argv)
+void cmd_nixie_get_type(cli_select_t t, uint8_t argc, char **argv)
 {
     nixieMapping_t m = nixieGetMapping();
-    print("%s: %02d%s", "TYPE", m, CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s: %02d%s", "TYPE", m, CFG_PRINTF_NEWLINE);
 }
 
-void cmd_nixie_set_mode(uint8_t argc, char **argv)
+void cmd_nixie_set_mode(cli_select_t t, uint8_t argc, char **argv)
 {
     char* end;
     int32_t mode = strtol(argv[0], &end, 10);
@@ -103,20 +104,20 @@ void cmd_nixie_set_mode(uint8_t argc, char **argv)
     /* Make sure values are valid */
     if ((mode < 0) || (mode >= NIXIECLOCK_MODE_END))
     {
-        print("%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
+        print(cli_send[t], "%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
         return;
     }
 
     nixieclockMode_t m = mode;
     nixieclockStoreMode(m);
     nixieclockSetMode(m);
-    print("%s%s", "OK", CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
-void cmd_nixie_get_mode(uint8_t argc, char **argv)
+void cmd_nixie_get_mode(cli_select_t t, uint8_t argc, char **argv)
 {
     nixieclockMode_t m = nixieclockGetMode();
-    print("%s: %02d%s", "MODE", m, CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s: %02d%s", "MODE", m, CFG_PRINTF_NEWLINE);
 }
 
 #endif

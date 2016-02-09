@@ -40,11 +40,11 @@
 #define __DCF_H__
 
 #include "platform_config.h"
-#include "rtc/rtc.h"
+#include "rtc/rtc_functions.h"
 
 void dcfInit(void);
 void dcfSetCallback(void(*pFunc)(void));
-error_t dcfTime(rtcTime_t *utc);
+uint8_t dcfTime(rtcTime_t *local);
 void dcfPoll(void);
 
 #endif

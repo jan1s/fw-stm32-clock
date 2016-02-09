@@ -40,6 +40,7 @@
 #include "platform_config.h"
 
 #include "clock.h"
+#include "cli/cli.h"
 #include "print.h"
 
 #include <stdio.h>
@@ -47,7 +48,7 @@
 #include <string.h>
 
 
-void cmd_clock_set_source(uint8_t argc, char **argv)
+void cmd_clock_set_source(cli_select_t t, uint8_t argc, char **argv)
 {
     char* end;
     int32_t source = strtol(argv[1], &end, 10);
@@ -66,7 +67,7 @@ void cmd_clock_set_source(uint8_t argc, char **argv)
     */
 }
 
-void cmd_clock_get_source(uint8_t argc, char **argv)
+void cmd_clock_get_source(cli_select_t t, uint8_t argc, char **argv)
 {
     /*
     nixieMapping_t m = nixieGetMapping();
