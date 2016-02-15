@@ -31,8 +31,10 @@
 #include "stm32_it.h"
 #include "usb_lib.h"
 #include "usb_istr.h"
+#include "usb_cdc.h"
 
 #include "timer.h"
+#include "led.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -170,7 +172,9 @@ void SysTick_Handler(void)
 *******************************************************************************/
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
-    USB_Istr();
+  led_usr_on();
+  USB_Istr();
+  led_usr_off();
 }
 
 /*******************************************************************************
@@ -205,7 +209,9 @@ void EVAL_COM1_IRQHandler(void)
 
 void USBWakeUp_IRQHandler(void)
 {
+    //led_usr_on();
     EXTI_ClearITPendingBit(EXTI_Line18);
+    //led_usr_off();
 }
 
 /******************************************************************************/

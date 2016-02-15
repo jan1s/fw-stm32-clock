@@ -126,10 +126,13 @@ void cliPoll(cli_select_t t)
 	{
 	case CLI_USBCDC:
 		{
-			while (USB_CDC_Read(&c))
-			{
-				cliRx(t, c);
-			}
+            if(USB_CDC_Configured())
+            {
+                while (USB_CDC_Read(&c))
+                {
+                    cliRx(t, c);
+                }
+            }
 		}
 		break;
 

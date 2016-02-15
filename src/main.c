@@ -7,7 +7,7 @@
 #include "cli/cli.h"
 #include "clock.h"
 #include "protocol/protocol.h"
-#include "uart.h"
+#include "usb_pwr.h"
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,10 +43,11 @@ int main(void)
 
     while(1)
     {
-        //led_sys_on();
+    	led_sys_on();
+    	cliPoll(CLI_USBCDC);
         //protocolPoll();
-        cliPoll(CLI_USBCDC);
-        //led_sys_off();
+        led_sys_off();
+        
         clockPoll();
     }
 }

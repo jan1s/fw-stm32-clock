@@ -17,7 +17,7 @@
 #include "rtc/dcf.h"
 #include "rtc/gps.h"
 
-uint32_t lastEpoch = 0;
+static uint32_t lastEpoch = 0;
 
 clockSource_t clockSource;
 
@@ -147,6 +147,8 @@ void clockPoll()
 
     if(epoch != lastEpoch)
     {
+        lastEpoch = epoch;
+
         rtcTime_t utc;
         rtcTime_t local;
 
