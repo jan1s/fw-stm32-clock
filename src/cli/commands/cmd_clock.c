@@ -54,23 +54,21 @@ void cmd_clock_set_source(cli_select_t t, uint8_t argc, char **argv)
     int32_t source = strtol(argv[1], &end, 10);
 
     /* Make sure values are valid */
-    /*
-    if ((mapping < 0) || (mapping >= NIXIE_TYPE_END))
+    if ((source < 0) || (source >= CLOCK_SOURCE_END))
     {
       print("%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
       return;
     }
 
-    nixieMapping_t m = mapping;
-    nixieStoreMapping(m);
-    nixieSetMapping(m);
-    */
+    clockSource_t s = source;
+    clockStoreSource(s);
+    clockSetSource(s);
+
+    print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
 void cmd_clock_get_source(cli_select_t t, uint8_t argc, char **argv)
 {
-    /*
-    nixieMapping_t m = nixieGetMapping();
-    print("%s: %02d%s", "TYPE", m, CFG_PRINTF_NEWLINE);
-    */
+	clockSource_t s = clockGetSource();
+    print("%s: %02d%s", "SOURCE", s, CFG_PRINTF_NEWLINE);
 }

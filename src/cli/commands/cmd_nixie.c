@@ -43,6 +43,7 @@
 
 #include "nixie/nixie.h"
 #include "nixie/nixieclock.h"
+#include "timer.h"
 #include "cli/cli.h"
 #include "print.h"
 
@@ -53,8 +54,7 @@
 
 void cmd_nixie_test(cli_select_t t, uint8_t argc, char **argv)
 {
-    /*
-    nixieDisplay_t display;
+    nixieDisplay4t_t display;
 
     for(uint8_t i = 0; i < 10; i++)
     {
@@ -62,12 +62,10 @@ void cmd_nixie_test(cli_select_t t, uint8_t argc, char **argv)
       display.digits[1] = i;
       display.digits[2] = i;
       display.digits[3] = i;
-      display.digits[4] = i;
-      display.digits[5] = i;
-      nixieDisplay( &display );
-      delay(1000);
+      nixieDisplay4t( &display );
+      timer_sleep(1000);
     }
-    */
+
     print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
 }
 
