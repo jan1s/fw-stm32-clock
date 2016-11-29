@@ -63,7 +63,7 @@ void cmd_nixie_test(cli_select_t t, uint8_t argc, char **argv)
       display.digits[2] = i;
       display.digits[3] = i;
       nixieDisplay4t( &display );
-      timer_sleep(1000);
+      timer_sleep(100000);
     }
 
     print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);

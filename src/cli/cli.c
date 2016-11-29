@@ -186,7 +186,7 @@ void cliRx(cli_select_t t, uint8_t c)
 #if CFG_INTERFACE_SILENTMODE == 0
         print(cli_send[t], "%s", CFG_PRINTF_NEWLINE);
 #endif
-        cliParse(t, (char *)cli_buffer);
+        cliParse(t, (char *)cli_buffer[t]);
         cli_buffer_ptr[t] = cli_buffer[t];
         break;
 
