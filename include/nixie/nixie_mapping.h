@@ -101,13 +101,77 @@ The bitwurst is shifted from right to left in the shiftregisters shown above.
 After every two tubes are two dots to seperate the seconds, minutes and hours.
 */
 
+/*
+NXIE_TYPE_D - Shiftregister layout
+
+ (  Tube6  )(  Tube5  )  (  Tube4  ) (  Tube3  )  (  Tube2  )(  Tube1  ) <- Tubes
+ 09876543 21098765 4321**09 87654321 09876543 21**0987 65432109 87654321 <- Tube digits
+ |||||||| |||||||| |||||||| |||||||| |||||||| |||||||| |||||||| ||||||||
+ HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA <- Shiftregister Outputs
+  Reg. 8   Reg. 7   Reg. 6   Reg. 5   Reg. 4   Reg. 3   Reg. 2   Reg. 1  <- Shiftregisters
+
+The mapping of the tube pins is repeating in 11bit periods.
+Therefore it is possible to use following constants to select the digits to display:
+
+  |     Nixie-tube    |
+  \___________________/
+   | | | | | | | | | |
+   0 9 8 7 6 5 4 3 2 1
+
+0b 1 0 0 0 0 0 0 0 0 0  0x0200  <- Displays 0
+0b 0 0 0 0 0 0 0 0 0 1  0x0001  <- Displays 1
+0b 0 0 0 0 0 0 0 0 1 0  0x0002  <- Displays 2
+0b 0 0 0 0 0 0 0 1 0 0  0x0004  <- Displays 3
+0b 0 0 0 0 0 0 1 0 0 0  0x0008  <- Displays 4
+0b 0 0 0 0 0 1 0 0 0 0  0x0010  <- Displays 5
+0b 0 0 0 0 1 0 0 0 0 0  0x0020  <- Displays 6
+0b 0 0 0 1 0 0 0 0 0 0  0x0040  <- Displays 7
+0b 0 0 1 0 0 0 0 0 0 0  0x0080  <- Displays 8
+0b 0 1 0 0 0 0 0 0 0 0  0x0100  <- Displays 9
+
+The bitwurst is shifted from right to left in the shiftregisters shown above.
+After every two tubes are two dots to seperate the seconds, minutes and hours.
+*/
+
+/*
+NXIE_TYPE_E - Shiftregister layout
+
+ (  Tube1  )(  Tube2  )  (  Tube3  ) (  Tube4  )  (  Tube5  )(  Tube6  ) <- Tubes
+ 09876543 21098765 4321**09 87654321 09876543 21**0987 65432109 87654321 <- Tube digits
+ |||||||| |||||||| |||||||| |||||||| |||||||| |||||||| |||||||| ||||||||
+ HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA HGFEDCBA <- Shiftregister Outputs
+  Reg. 8   Reg. 7   Reg. 6   Reg. 5   Reg. 4   Reg. 3   Reg. 2   Reg. 1  <- Shiftregisters
+
+The mapping of the tube pins is repeating in 10bit periods.
+Therefore it is possible to use following constants to select the digits to display:
+
+  |     Nixie-tube    |
+  \___________________/
+   | | | | | | | | | |
+   0 9 8 7 6 5 4 3 2 1
+
+0b 1 0 0 0 0 0 0 0 0 0  0x0200  <- Displays 0
+0b 0 0 0 0 0 0 0 0 0 1  0x0001  <- Displays 1
+0b 0 0 0 0 0 0 0 0 1 0  0x0002  <- Displays 2
+0b 0 0 0 0 0 0 0 1 0 0  0x0004  <- Displays 3
+0b 0 0 0 0 0 0 1 0 0 0  0x0008  <- Displays 4
+0b 0 0 0 0 0 1 0 0 0 0  0x0010  <- Displays 5
+0b 0 0 0 0 1 0 0 0 0 0  0x0020  <- Displays 6
+0b 0 0 0 1 0 0 0 0 0 0  0x0040  <- Displays 7
+0b 0 0 1 0 0 0 0 0 0 0  0x0080  <- Displays 8
+0b 0 1 0 0 0 0 0 0 0 0  0x0100  <- Displays 9
+
+The bitwurst is shifted from right to left in the shiftregisters shown above.
+After every two tubes are two dots to seperate the seconds, minutes and hours.
+*/
+
 const uint16_t digitMap[8][11] =
 {
     { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }, // NONE
     { 0x0080, 0x0010, 0x0008, 0x0004, 0x0002, 0x0001, 0x0200, 0x0100, 0x0020, 0x0040, 0x0000 }, // 1
     { 0x0001, 0x0200, 0x0100, 0x0080, 0x0040, 0x0020, 0x0010, 0x0008, 0x0004, 0x0002, 0x0000 }, // 2
     { 0x0001, 0x0002, 0x0400, 0x0200, 0x0100, 0x0080, 0x0020, 0x0040, 0x0010, 0x0004, 0x0008 }, // 3
-    { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }, // 4
+    { 0x0200, 0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080, 0x0100, 0x0000 }, // 4
     { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }, // 5
     { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }, // 6
     { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 }  // 7

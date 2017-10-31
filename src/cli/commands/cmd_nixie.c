@@ -54,17 +54,47 @@
 
 void cmd_nixie_test(cli_select_t t, uint8_t argc, char **argv)
 {
-    nixieDisplay4t_t display;
+	switch(nixieclockMode)
+	{
+	case NIXIECLOCK_MODE_NONE:
+	case NIXIECLOCK_MODE_HHMM:
+	case NIXIECLOCK_MODE_MMSS:
+	case NIXIECLOCK_MODE_YYYY:
+	{
+		nixieDisplay4t_t display;
+		for(uint8_t i = 0; i < 10; i++)
+		{
+		  display.digits[0] = i;
+		  display.digits[1] = i;
+		  display.digits[2] = i;
+		  display.digits[3] = i;
+		  nixieDisplay4t( &display );
+		  timer_sleep(100000);
+		}
+	}
+	break;
 
-    for(uint8_t i = 0; i < 10; i++)
-    {
-      display.digits[0] = i;
-      display.digits[1] = i;
-      display.digits[2] = i;
-      display.digits[3] = i;
-      nixieDisplay4t( &display );
-      timer_sleep(100000);
-    }
+	case NIXIECLOCK_MODE_HHMMSS:
+	case NIXIECLOCK_MODE_HHMMSS_R:
+	{
+		nixieDisplay6t_t display;
+		for(uint8_t i = 0; i < 10; i++)
+		{
+		  display.digits[0] = i;
+		  display.digits[1] = i;
+		  display.digits[2] = i;
+		  display.digits[3] = i;
+		  display.digits[4] = i;
+		  display.digits[5] = i;
+		  nixieDisplay6t( &display );
+		  timer_sleep(100000);
+		}
+	}
+	break;
+
+	default:
+		break;
+	}
 
     print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
 }

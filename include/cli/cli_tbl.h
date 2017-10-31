@@ -96,7 +96,7 @@ cli_t cli_tbl[] =
     { "nixie_test",        0,  1,  0, cmd_nixie_test                             , "Nixie test"                        , CMD_NOPARAMS },
     { "nixie_settype",     1,  1,  0, cmd_nixie_set_type                         , "Nixie set type"                    , "'nixie_settype <type(0-4)>'" },
     { "nixie_gettype",     0,  0,  0, cmd_nixie_get_type                         , "Nixie get type"                    , CMD_NOPARAMS },
-    { "nixie_setmode",     1,  1,  0, cmd_nixie_set_mode                         , "Nixie set mode"                    , "'nixie_setmode <mode(0=NONE|1=HHMMSS|2=HHMM|3=MMSS|4=YYYY)>'" },
+    { "nixie_setmode",     1,  1,  0, cmd_nixie_set_mode                         , "Nixie set mode"                    , "'nixie_setmode <mode(0=NONE|1=HHMMSS|2=HHMM|3=MMSS|4=YYYY|5=HHMMSSR)>'" },
     { "nixie_getmode",     0,  0,  0, cmd_nixie_get_mode                         , "Nixie get mode"                    , CMD_NOPARAMS },
 #endif
 #ifdef CFG_FLIPDOT

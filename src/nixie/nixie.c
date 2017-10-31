@@ -165,45 +165,63 @@ void nixieDisplay6t( nixieDisplay6t_t *d )
     uint8_t outBufBitMask = 0x80;
 
     //Do thing for each digit
-    for(uint8_t digitCount = 0; digitCount < 6; ++digitCount)
-    {
-        // catch seperation dots
-        // nicer way would be nice
-        if( digitCount == 2 || digitCount == 4 )
-        {
-            outBuf[outBufCount] |= outBufBitMask;
-            outBufBitMask = outBufBitMask >> 1;
-            outBuf[outBufCount] |= outBufBitMask;
-            outBufBitMask = outBufBitMask >> 1;
-            outBufBitCount = outBufBitCount + 2;
-        }
+	for(uint8_t digitCount = 0; digitCount < 6; ++digitCount)
+	{
+		// catch seperation dots
+		// nicer way would be nice
+		if( digitCount == 2)
+		{
+			if(d->dots[0])
+			{
+				outBuf[outBufCount] |= (0x1 << outBufBitCount);
+			}
+			outBufBitCount++;
 
-        // get mapping for the digit to be displayed
-        uint16_t digitMapping = digitMap[mapping][d->digits[digitCount]];
+			if(d->dots[1])
+			{
+				outBuf[outBufCount] |= (0x1 << outBufBitCount);
+			}
+			outBufBitCount++;
+		}
 
-        // iterate over every digit, to be displayed.
-        for(uint8_t digit_bit_count = 0; digit_bit_count < 10; ++digit_bit_count)
-        {
-            // check if bit should be set
-            if(digitMapping & 0x0200)
-            {
-                outBuf[outBufCount] |= outBufBitMask;
-            }
+		if( digitCount == 4)
+		{
+			if(d->dots[2])
+			{
+				outBuf[outBufCount] |= (0x1 << outBufBitCount);
+			}
+			outBufBitCount++;
 
-            // increment checking position
-            digitMapping = digitMapping << 1;
-            outBufBitMask = outBufBitMask >> 1;
-            outBufBitCount++;
+			if(d->dots[3])
+			{
+				outBuf[outBufCount] |= (0x1 << outBufBitCount);
+			}
+			outBufBitCount++;
+		}
 
-            // one shift register is full
-            if(outBufBitCount >= 8)
-            {
-                outBufCount++;
-                outBufBitCount = 0;
-                outBufBitMask = 0x80;
-            }
-        }
-    }
+		// get mapping for the digit to be displayed
+		uint16_t digitMapping = digitMap[mapping][d->digits[digitCount]];
+
+		// iterate over every digit, to be displayed.
+		for(uint8_t digit_bit_count = 0; digit_bit_count < 10; ++digit_bit_count)
+		{
+			// one shift register is full
+			if(outBufBitCount >= 8)
+			{
+				outBufCount++;
+				outBufBitCount = 0;
+			}
+
+			// check if bit should be set
+			if(digitMapping & (0x1 << digit_bit_count))
+			{
+				outBuf[outBufCount] |= (0x1 << outBufBitCount);
+			}
+
+			// increment checking position
+			outBufBitCount++;
+		}
+	}
 
     nixieRegisterWrite(outBuf, sizeof(outBuf));
 }
