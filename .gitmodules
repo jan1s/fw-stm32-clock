@@ -1,3 +1,3 @@
 [submodule "system"]
 	path = system
-	url = git@github.com:jan1s/fw-stm32f10x-common.git
+	url = https://github.com/jan1s/fw-stm32f10x-common.git
