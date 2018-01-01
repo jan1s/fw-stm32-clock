@@ -14,6 +14,17 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+
+/* Virtual address of EEPROM emulated variables */
+uint16_t VirtAddVarTab[NumbOfVar] =
+{
+    CFG_EEPROM_TZ_STD,
+    CFG_EEPROM_TZ_DST,
+    CFG_EEPROM_CLOCK_SRC,
+    CFG_EEPROM_NIXIE_TYPE,
+    CFG_EEPROM_NIXIE_MODE
+};
+
 /* Extern variables ----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/

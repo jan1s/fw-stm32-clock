@@ -5,6 +5,48 @@
 #include "stm32f10x.h"
 
 /*=========================================================================
+    EEPROM Emulation
+    -----------------------------------------------------------------------
+
+    EEPROM is used to persist certain user modifiable values to make
+    sure that these changes remain in effect after a reset or hard
+    power-down.  The addresses in EEPROM for these various system
+    settings/values are defined below.  The first 256 bytes of EEPROM
+    are reserved for this (0x0000..0x00FF).
+
+    CFG_EEPROM_RESERVED       The last byte of reserved EEPROM memory
+
+          EEPROM Address (0x0000..0x00FF)
+          ===============================
+          0 1 2 3 4 5 6 7 8 9 A B C D E F
+    000x  . . . . . . . . . . . . . . . .
+    001x  x x x x x x . . . . . . . . . .   Timezone STD
+    002x  x x x x x x . . . . . . . . . .   Timezone DST
+    003x  x . . . . . . . . . . . . . . .   Clock Source
+    004x  x x x x . . . . . . . . . . . .   Nixie Type/Mode
+    005x  . . . . . . . . . . . . . . . .
+    006x  . . . . . . . . . . . . . . . .
+    007x  . . . . . . . . . . . . . . . .
+    008x  . . . . . . . . . . . . . . . .
+    009x  . . . . . . . . . . . . . . . .
+    00Ax  . . . . . . . . . . . . . . . .
+    00Bx  . . . . . . . . . . . . . . . .
+    00Cx  . . . . . . . . . . . . . . . .
+    00Dx  . . . . . . . . . . . . . . . .
+    00Ex  . . . . . . . . . . . . . . . .
+    00Fx  . . . . . . . . . . . . . . . .
+
+    -----------------------------------------------------------------------*/
+#define CFG_EEPROM_RESERVED     (0xFFFF)
+#define CFG_EEPROM_TZ_STD       (uint16_t)(0x0010)
+#define CFG_EEPROM_TZ_DST       (uint16_t)(0x0020)
+#define CFG_EEPROM_CLOCK_SRC    (uint16_t)(0x0030)
+#define CFG_EEPROM_NIXIE_TYPE   (uint16_t)(0x0040)
+#define CFG_EEPROM_NIXIE_MODE   (uint16_t)(0x0042)
+/*=========================================================================*/
+
+
+/*=========================================================================
     NIXIE
     -----------------------------------------------------------------------
 

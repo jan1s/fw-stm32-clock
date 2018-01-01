@@ -69,27 +69,21 @@ void nixieInit()
 
 void nixieStoreMapping( const nixieMapping_t m )
 {
-    /* Enable PWR and BKP clocks */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
+	/* Allow access to FLASH Domain */
+    FLASH_Unlock();
 
-    /* Allow access to BKP Domain */
-    PWR_BackupAccessCmd(ENABLE);
+    /* Write to the FLASH Domain */
+    EE_WriteVariable(CFG_EEPROM_NIXIE_TYPE, (uint16_t)m);
 
-    /* Read previous state */
-    uint16_t bkp = BKP_ReadBackupRegister(BKP_DR4);
-    bkp &= ~(0xFF00);
-    bkp |= (m << 8);
-
-    /* Write to the BKP Domain */
-    BKP_WriteBackupRegister(BKP_DR4, bkp);
-
-    /* Deny access to BKP Domain */
-    PWR_BackupAccessCmd(DISABLE);
+    /* Deny access to FLASH Domain */
+    FLASH_Lock();
 }
 
 nixieMapping_t nixieLoadMapping()
 {
-    return (BKP_ReadBackupRegister(BKP_DR4) & 0xFF00) >> 8;
+	uint16_t m;
+	EE_ReadVariable(CFG_EEPROM_NIXIE_TYPE, (uint16_t*)&m);
+    return m;
 }
 
 void nixieSetMapping( const nixieMapping_t m )

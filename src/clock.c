@@ -23,27 +23,21 @@ clockSource_t clockSource;
 
 void clockStoreSource( const clockSource_t s )
 {
-    /* Enable PWR and BKP clocks */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
+	/* Allow access to FLASH Domain */
+	FLASH_Unlock();
 
-    /* Allow access to BKP Domain */
-    PWR_BackupAccessCmd(ENABLE);
+	/* Write to the FLASH Domain */
+	EE_WriteVariable(CFG_EEPROM_CLOCK_SRC, (uint16_t)s);
 
-    /* Read previous state */
-    //uint16_t bkp = BKP_ReadBackupRegister(BKP_DR4);
-    //bkp &= ~(0xFF00);
-    //bkp |= (m << 8);
-
-    /* Write to the BKP Domain */
-    //BKP_WriteBackupRegister(BKP_DR4, bkp);
-
-    /* Deny access to BKP Domain */
-    PWR_BackupAccessCmd(DISABLE);
+	/* Deny access to FLASH Domain */
+	FLASH_Lock();
 }
 
 clockSource_t clockLoadSource()
 {
-    return (BKP_ReadBackupRegister(BKP_DR4) & 0xFF00) >> 8;
+	uint16_t s;
+	EE_ReadVariable(CFG_EEPROM_CLOCK_SRC, (uint16_t*)&s);
+	return s;
 }
 
 void clockSetSource( const clockSource_t s )

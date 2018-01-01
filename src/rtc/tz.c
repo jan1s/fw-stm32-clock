@@ -35,36 +35,38 @@ void   tzGetSTD( tzRule_t *std )
 
 void tzStoreSTD( tzRule_t *std )
 {
-    /* Enable PWR and BKP clocks */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
+    /* Convert */
+    uint16_t offset = std->offset;
+    uint16_t hourdow = (std->hour << 8) + std->dow;
+    uint16_t weekmonth = (std->week << 8) + std->month;
 
-    /* Allow access to BKP Domain */
-    PWR_BackupAccessCmd(ENABLE);
+    /* Allow access to FLASH Domain */
+    FLASH_Unlock();
 
-    /* Read previous state */
-    uint16_t bkp_offset = std->offset;
-    uint16_t bkp_hourdow = (std->hour << 8) + std->dow;
-    uint16_t bkp_weekmonth = (std->week << 8) + std->month;
+    /* Write to the FLASH Domain */
+    EE_WriteVariable(CFG_EEPROM_TZ_STD+0, offset);
+    EE_WriteVariable(CFG_EEPROM_TZ_STD+1, hourdow);
+    EE_WriteVariable(CFG_EEPROM_TZ_STD+2, weekmonth);
 
-    /* Write to the BKP Domain */
-    BKP_WriteBackupRegister(BKP_DR5, bkp_offset);
-    BKP_WriteBackupRegister(BKP_DR6, bkp_hourdow);
-    BKP_WriteBackupRegister(BKP_DR7, bkp_weekmonth);
-
-    /* Deny access to BKP Domain */
-    PWR_BackupAccessCmd(DISABLE);
+    /* Deny access to FLASH Domain */
+    FLASH_Lock();
 }
 
 void tzLoadSTD( tzRule_t *std )
 {
-    uint16_t bkp_offset = BKP_ReadBackupRegister(BKP_DR5);
-    uint16_t bkp_hourdow = BKP_ReadBackupRegister(BKP_DR6);
-    uint16_t bkp_weekmonth = BKP_ReadBackupRegister(BKP_DR7);
-    std->offset = bkp_offset;
-    std->hour = bkp_hourdow >> 8;
-    std->dow = bkp_hourdow & 0xFF;
-    std->week = bkp_weekmonth >> 8;
-    std->month = bkp_weekmonth & 0xFF;
+    uint16_t offset;
+    uint16_t hourdow;
+    uint16_t weekmonth;
+
+    EE_ReadVariable(CFG_EEPROM_TZ_STD+0, &offset);
+    EE_ReadVariable(CFG_EEPROM_TZ_STD+1, &hourdow);
+    EE_ReadVariable(CFG_EEPROM_TZ_STD+2, &weekmonth);
+
+    std->offset = offset;
+    std->hour = hourdow >> 8;
+    std->dow = hourdow & 0xFF;
+    std->week = weekmonth >> 8;
+    std->month = weekmonth & 0xFF;
 }
 
 void   tzSetDST( tzRule_t *dst )
@@ -79,36 +81,38 @@ void   tzGetDST( tzRule_t *dst )
 
 void tzStoreDST( tzRule_t *dst )
 {
-    /* Enable PWR and BKP clocks */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
+	/* Convert */
+	uint16_t offset = dst->offset;
+	uint16_t hourdow = (dst->hour << 8) + dst->dow;
+	uint16_t weekmonth = (dst->week << 8) + dst->month;
 
-    /* Allow access to BKP Domain */
-    PWR_BackupAccessCmd(ENABLE);
+	/* Allow access to FLASH Domain */
+	FLASH_Unlock();
 
-    /* Read previous state */
-    uint16_t bkp_offset = dst->offset;
-    uint16_t bkp_hourdow = (dst->hour << 8) + dst->dow;
-    uint16_t bkp_weekmonth = (dst->week << 8) + dst->month;
+	/* Write to the FLASH Domain */
+	EE_WriteVariable(CFG_EEPROM_TZ_DST+0, offset);
+	EE_WriteVariable(CFG_EEPROM_TZ_DST+1, hourdow);
+	EE_WriteVariable(CFG_EEPROM_TZ_DST+2, weekmonth);
 
-    /* Write to the BKP Domain */
-    BKP_WriteBackupRegister(BKP_DR8, bkp_offset);
-    BKP_WriteBackupRegister(BKP_DR9, bkp_hourdow);
-    BKP_WriteBackupRegister(BKP_DR10, bkp_weekmonth);
-
-    /* Deny access to BKP Domain */
-    PWR_BackupAccessCmd(DISABLE);
+	/* Deny access to FLASH Domain */
+	FLASH_Lock();
 }
 
 void tzLoadDST( tzRule_t *dst )
 {
-    uint16_t bkp_offset = BKP_ReadBackupRegister(BKP_DR8);
-    uint16_t bkp_hourdow = BKP_ReadBackupRegister(BKP_DR9);
-    uint16_t bkp_weekmonth = BKP_ReadBackupRegister(BKP_DR10);
-    dst->offset = bkp_offset;
-    dst->hour = bkp_hourdow >> 8;
-    dst->dow = bkp_hourdow & 0xFF;
-    dst->week = bkp_weekmonth >> 8;
-    dst->month = bkp_weekmonth & 0xFF;
+	uint16_t offset;
+	uint16_t hourdow;
+	uint16_t weekmonth;
+
+	EE_ReadVariable(CFG_EEPROM_TZ_DST+0, &offset);
+	EE_ReadVariable(CFG_EEPROM_TZ_DST+1, &hourdow);
+	EE_ReadVariable(CFG_EEPROM_TZ_DST+2, &weekmonth);
+
+	dst->offset = offset;
+	dst->hour = hourdow >> 8;
+	dst->dow = hourdow & 0xFF;
+	dst->week = weekmonth >> 8;
+	dst->month = weekmonth & 0xFF;
 }
 
 /**************************************************************************/

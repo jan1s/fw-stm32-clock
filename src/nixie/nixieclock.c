@@ -23,27 +23,21 @@ void nixieclockInit()
 
 void nixieclockStoreMode( const nixieclockMode_t m )
 {
-    /* Enable PWR and BKP clocks */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR | RCC_APB1Periph_BKP, ENABLE);
+	/* Allow access to FLASH Domain */
+    FLASH_Unlock();
 
-    /* Allow access to BKP Domain */
-    PWR_BackupAccessCmd(ENABLE);
+    /* Write to the FLASH Domain */
+	EE_WriteVariable(CFG_EEPROM_NIXIE_MODE, (uint16_t)m);
 
-    /* Read previous state */
-    uint16_t bkp = BKP_ReadBackupRegister(BKP_DR4);
-    bkp &= ~(0xFF);
-    bkp |= m;
-
-    /* Write to the BKP Domain */
-    BKP_WriteBackupRegister(BKP_DR4, bkp);
-
-    /* Deny access to BKP Domain */
-    PWR_BackupAccessCmd(DISABLE);
+	/* Deny access to FLASH Domain */
+	FLASH_Lock();
 }
 
 nixieclockMode_t nixieclockLoadMode()
 {
-    return (BKP_ReadBackupRegister(BKP_DR4) & 0xFF);
+	uint16_t m;
+	EE_ReadVariable(CFG_EEPROM_NIXIE_MODE, (uint16_t*)&m);
+	return m;
 }
 
 void nixieclockSetMode( const nixieclockMode_t m )
