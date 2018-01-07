@@ -116,6 +116,8 @@ void nixieclockShowTime(rtcTime_t t)
         d.digits[2] = t.minutes % 10;
         d.digits[1] = t.seconds / 10;
         d.digits[0] = t.seconds % 10;
+        d.dots[3] = t.seconds % 2;
+        d.dots[2] = t.seconds % 2;
         d.dots[1] = t.seconds % 2;
         d.dots[0] = t.seconds % 2;
         nixieDisplay6t(&d);
@@ -131,6 +133,8 @@ void nixieclockShowTime(rtcTime_t t)
             d.digits[3] = t.minutes % 10;
             d.digits[4] = t.seconds / 10;
             d.digits[5] = t.seconds % 10;
+            d.dots[3] = t.seconds % 2;
+            d.dots[2] = t.seconds % 2;
             d.dots[1] = t.seconds % 2;
             d.dots[0] = t.seconds % 2;
             nixieDisplay6t(&d);

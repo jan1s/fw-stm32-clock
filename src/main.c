@@ -16,6 +16,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* Virtual address of EEPROM emulated variables */
+/* Check in stm32f10x_eeprom.h for the NumbOfVar
+ * and in platform_config.h for the actual definitions */
 uint16_t VirtAddVarTab[NumbOfVar] =
 {
     CFG_EEPROM_TZ_STD,
@@ -47,7 +49,7 @@ int main(void)
     timer_sleep(50000);
     led_sys_off();
 
-    //cliInit(CLI_USBCDC);
+    cliInit(CLI_USBCDC);
     cliInit(CLI_USART1);
     //cliInit(CLI_USART2);
 
@@ -57,7 +59,7 @@ int main(void)
     while(1)
     {
     	led_sys_on();
-    	//cliPoll(CLI_USBCDC);
+    	cliPoll(CLI_USBCDC);
     	cliPoll(CLI_USART1);
     	//cliPoll(CLI_USART2);
         //protocolPoll();

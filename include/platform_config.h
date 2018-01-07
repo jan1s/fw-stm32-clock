@@ -38,11 +38,11 @@
 
     -----------------------------------------------------------------------*/
 #define CFG_EEPROM_RESERVED     (0xFFFF)
-#define CFG_EEPROM_TZ_STD       (uint16_t)(0x0010)
-#define CFG_EEPROM_TZ_DST       (uint16_t)(0x0020)
-#define CFG_EEPROM_CLOCK_SRC    (uint16_t)(0x0030)
-#define CFG_EEPROM_NIXIE_TYPE   (uint16_t)(0x0040)
-#define CFG_EEPROM_NIXIE_MODE   (uint16_t)(0x0042)
+#define CFG_EEPROM_TZ_STD       (uint16_t)0x0010
+#define CFG_EEPROM_TZ_DST       (uint16_t)0x0020
+#define CFG_EEPROM_CLOCK_SRC    (uint16_t)0x0030
+#define CFG_EEPROM_NIXIE_TYPE   (uint16_t)0x0040
+#define CFG_EEPROM_NIXIE_MODE   (uint16_t)0x0042
 /*=========================================================================*/
 
 
