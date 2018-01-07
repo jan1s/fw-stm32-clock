@@ -85,3 +85,5 @@ Where possible, all code is provided under a BSD style license, but each file is
 [nixieclock]: https://github.com/jan1s/hw-nixieclock
 [flipdot]: https://github.com/jan1s/hw-flipdot
 [wordclock]: https://github.com/jan1s/hw-wordclock
+[brew]: http://brew.sh
+[stlink]: https://github.com/texane/stlink
