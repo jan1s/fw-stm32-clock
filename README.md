@@ -1,6 +1,31 @@
 # fw-clock
 Common firmware for several stm32f10x based clock projects
 
+## Flashing ##
+
+This repository holds a .hex file that only needs to be flashed on the clock.
+
+### macOS ###
+
+1. If you have not installed [Homebrew][brew] yet, you should do that right now.
+
+2. Install [stlink][stlink]:
+
+    ```bash
+    brew install stlink
+    ```
+
+3. Flash using st-flash:
+
+    ```bash
+    st-flash --format ihex write fw-clock.hex
+    ```
+
+## Building ##
+
+If a custom build is required or the code needs to be changed a standard [STM32 toolchain][toolchain] can be used to build, flash and debug the firmware.
+
+
 ## Commandline Interface ##
 
 The clock offers a commandline interface over a serial port.
@@ -43,6 +68,10 @@ Most common Daylight Saving Time rules:
 |               | EEST | UTC+3  | October | last | Sunday      | 1    |
 | Europe/Moscow | MSK  | UTC+4  |         |      |             |      |
 
+### Setting display board specifics
+
+For the [Nixieclock][nixieclock], the [Flipdot][flipdot] and [Wordclock][wordclock].
+
 
 ## License ##
 
@@ -52,3 +81,7 @@ Where possible, all code is provided under a BSD style license, but each file is
 
 [codebase]: https://github.com/microbuilder/LPC11U_LPC13U_CodeBase
 [microbuilder]: http://www.microbuilder.eu/
+[toolchain]: https://jan1s.github.io/jekyll/update/2016/11/27/stm32-toolchain.html
+[nixieclock]: https://github.com/jan1s/hw-nixieclock
+[flipdot]: https://github.com/jan1s/hw-flipdot
+[wordclock]: https://github.com/jan1s/hw-wordclock
