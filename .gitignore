@@ -32,6 +32,9 @@
 *.dSYM/
 /Debug/
 
+# macOS
+*.DS_Store
+
 .settings/*
 .metadata/*
 
