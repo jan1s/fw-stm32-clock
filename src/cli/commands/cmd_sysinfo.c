@@ -45,6 +45,9 @@
 #include "cli/cli.h"
 #include "print.h"
 
+#define STM32_UUID ((uint32_t *)0x1FFFF7E8)
+#define VERSION_STRING "v1.00"
+
 /**************************************************************************/
 /*!
     'sysinfo' command handler
@@ -52,5 +55,9 @@
 /**************************************************************************/
 void cmd_sysinfo(cli_select_t t, uint8_t argc, char **argv)
 {
-	print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
+	uint32_t idPart1 = STM32_UUID[0];
+	uint32_t idPart2 = STM32_UUID[1];
+	uint32_t idPart3 = STM32_UUID[2];
+
+	print(cli_send[t], "%s: %08x-%08x-%08x, %s: %s%s", "ID", idPart1, idPart2, idPart3, "VER", VERSION_STRING, CFG_PRINTF_NEWLINE);
 }
