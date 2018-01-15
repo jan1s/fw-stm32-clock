@@ -159,7 +159,7 @@
     -----------------------------------------------------------------------*/
 #define CFG_PROTOCOL
 //#define CFG_PROTOCOL_USBCDC
-#define CFG_PROTOCOL_USART1
+//#define CFG_PROTOCOL_USART1
 //#define CFG_PROTOCOL_UART2
 /*=========================================================================*/
 

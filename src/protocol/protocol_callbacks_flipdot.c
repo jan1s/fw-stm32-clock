@@ -1,6 +1,6 @@
 #include "platform_config.h"
 
-#ifdef CFG_FLIPDOT
+#ifdef CFG_TYPE_FLIPDOT
 
 #include "protocol/protocol.h"
 #include "flipdot/flipdot.h"
@@ -34,14 +34,14 @@ void protocolMsgCallbackFpdMod(protocolMsgFpdMod_t *mod)
     /* Deny access to BKP Domain */
     PWR_BackupAccessCmd(DISABLE);
 
-    flipdotClockMode = mod->mode;
+    flipdotclockMode = mod->mode;
     protocolReplyPacket(PROTOCOL_MSG_ID_FPD_MOD);
 }
 
 void protocolMsgPollCallbackFpdMod(void)
 {
     protocolMsgFpdMod_t mod;
-    mod.mode = flipdotClockMode;
+    mod.mode = flipdotclockMode;
     protocolMsgSendFpdMod(&mod);
 }
 

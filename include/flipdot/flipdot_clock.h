@@ -2,24 +2,25 @@
 #define FLIPDOT_CLOCK_H_
 
 #include "platform_config.h"
+#include "rtc/rtc_functions.h"
 
 typedef enum
 {
-    fclock_mode_inactive,
-    fclock_mode_carp,
-    fclock_mode_bass,
-    fclock_mode_catfish,
-    fclock_mode_perch,
-    fclock_mode_redfish,
-    fclock_mode_salmon,
-    fclock_mode_trout,
-    fclock_mode_walleye,
-    fclock_mode_sunfish
-} fclock_mode_t;
+	FLIPDOTCLOCK_MODE_NONE = 0,
+	FLIPDOTCLOCK_MODE_ddmmHHMM,
+	FLIPDOTCLOCK_MODE_ddHHMMSS,
+	FLIPDOTCLOCK_MODE_ddmmyyyy,
+	FLIPDOTCLOCK_MODE_END
+} flipdotclockMode_t;
 
-extern fclock_mode_t flipdotClockMode;
+extern flipdotclockMode_t flipdotclockMode;
 
 void flipdotClockInit(void);
-void flipdotClockShowTime(uint32_t t);
+void flipdotClockShowTime(rtcTime_t t);
+
+void flipdotclockStoreMode( const flipdotclockMode_t m );
+flipdotclockMode_t flipdotclockLoadMode();
+void flipdotclockSetMode( const flipdotclockMode_t m );
+flipdotclockMode_t fliptdotclockGetMode( void );
 
 #endif // FLIPDOT_CLOCK_H_

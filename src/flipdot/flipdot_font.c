@@ -1,8 +1,8 @@
 #include "platform_config.h"
 
-#ifdef CFG_TYPE_FLIPDOT
+#ifdef CFG_FLIPDOT
 
-#include "flipdot.h"
+#include "flipdot/flipdot.h"
 
 const uint8_t font[128][6] =
 {
@@ -145,7 +145,6 @@ const uint8_t font[128][6] =
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 };
 
-#ifdef CFG_TYPE_FLIPDOT_84X7
 void flipdot_setstring_84x7(fdisp_84x7_t *d, uint8_t *s, size_t slen)
 {
     for(uint8_t i = 0; (i < slen) && (i < 14); ++i)
@@ -156,7 +155,6 @@ void flipdot_setstring_84x7(fdisp_84x7_t *d, uint8_t *s, size_t slen)
         }
     }
 }
-#endif
 
 #ifdef CFG_TYPE_FLIPDOT_112X16
 void flipdot_setstring_112x16(fdisp_112x16_t *d, uint8_t *s, size_t slen)
@@ -171,4 +169,4 @@ void flipdot_setstring_112x16(fdisp_112x16_t *d, uint8_t *s, size_t slen)
 }
 #endif
 
-#endif // CFG_TYPE_FLIPDOT
+#endif // CFG_FLIPDOT

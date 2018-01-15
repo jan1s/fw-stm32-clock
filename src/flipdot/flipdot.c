@@ -1,8 +1,8 @@
 #include "platform_config.h"
 
-#ifdef CFG_TYPE_FLIPDOT
+#ifdef CFG_FLIPDOT
 
-#include "flipdot.h"
+#include "flipdot/flipdot.h"
 #include "timer.h"
 #include <string.h>
 
@@ -34,6 +34,13 @@ void flipdot_init()
 
     GPIO_ResetBits((GPIO_TypeDef *)GPIOB_BASE, 1 << CFG_FLIPPER_SREN_PIN);
 
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_ResetBits((GPIO_TypeDef *)GPIOA_BASE, 1 << 8);
+
 
     SPI_InitTypeDef  SPI_InitStructure;
 
@@ -53,7 +60,6 @@ void flipdot_init()
     SPI_Cmd(SPI1, ENABLE);
 }
 
-#ifdef CFG_TYPE_FLIPDOT_84X7
 fdisp_84x7_t flipdotState84x7;
 
 void flipdot_wipe_84x7(uint8_t dir)
@@ -92,7 +98,6 @@ void flipdot_set_84x7(const fdisp_84x7_t *d)
     }
     flipdotState84x7 = *d;
 }
-#endif
 
 #ifdef CFG_TYPE_FLIPDOT_112X16
 fdisp_112x16_t flipdotState112x16;
@@ -156,7 +161,7 @@ void  flipdot_flip(uint8_t row, uint8_t col, uint8_t dir)
         buf[1] |= 0b00100000;
     }
 
-    for(uint32_t i = 0; i < 16; ++i)
+    for(uint32_t i = 0; i < 128; ++i)
     {
         uint8_t sel = (col & 0b11100000) >> 5;
         if(sel == 0)
@@ -222,4 +227,4 @@ void  flipdot_flip(uint8_t row, uint8_t col, uint8_t dir)
     }
 }
 
-#endif // CFG_TYPE_FLIPDOT
+#endif // CFG_FLIPDOT

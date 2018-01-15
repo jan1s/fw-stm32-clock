@@ -69,6 +69,10 @@ void cmd_nixie_get_mode(cli_select_t t, uint8_t argc, char **argv);
 #endif
 
 #ifdef CFG_FLIPDOT
+void cmd_flipdot_set_type(cli_select_t t, uint8_t argc, char **argv);
+void cmd_flipdot_get_type(cli_select_t t, uint8_t argc, char **argv);
+void cmd_flipdot_set_mode(cli_select_t t, uint8_t argc, char **argv);
+void cmd_flipdot_get_mode(cli_select_t t, uint8_t argc, char **argv);
 #endif
 
 
@@ -100,6 +104,8 @@ cli_t cli_tbl[] =
     { "nixie_getmode",     0,  0,  0, cmd_nixie_get_mode                         , "Nixie get mode"                    , CMD_NOPARAMS },
 #endif
 #ifdef CFG_FLIPDOT
+    { "flipdot_setmode",   1,  1,  0, cmd_flipdot_set_mode                       , "Flipdot set mode"                  , "'flipdot_setmode <mode(0=NONE|1=HHMMSS|2=HHMM|3=MMSS|4=YYYY|5=HHMMSSR)>'" },
+    { "flipdot_getmode",   0,  0,  0, cmd_flipdot_get_mode                       , "Flipdot get mode"                  , CMD_NOPARAMS },
 #endif
 };
 

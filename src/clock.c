@@ -3,8 +3,8 @@
 #include "clock.h"
 
 #ifdef CFG_FLIPDOT
-#include "flipdot.h"
-#include "flipdot_clock.h"
+#include "flipdot/flipdot.h"
+#include "flipdot/flipdot_clock.h"
 #endif
 
 #ifdef CFG_NIXIE

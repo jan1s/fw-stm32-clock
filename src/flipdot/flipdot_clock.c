@@ -1,9 +1,9 @@
 #include "platform_config.h"
 
-#ifdef CFG_TYPE_FLIPDOT
+#ifdef CFG_FLIPDOT
 
-#include "flipdot.h"
-#include "flipdot_clock.h"
+#include "flipdot/flipdot.h"
+#include "flipdot/flipdot_clock.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -11,24 +11,30 @@
 
 #include "timer.h"
 
-fclock_mode_t flipdotClockMode;
+flipdotclockMode_t flipdotclockMode;
 
-const char *wdays[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+const char *wdays[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 const char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 // ----------------------------------------------------------------------------
 
 void flipdotClockInit()
 {
-    flipdotClockMode = (BKP_ReadBackupRegister(BKP_DR4) & 0xFF);
+    flipdotclockMode = flipdotclockLoadMode();
 
-#ifdef CFG_TYPE_FLIPDOT_84X7
-    flipdot_wipe_84x7(0);
     fdisp_84x7_t d;
     const uint8_t shallo[] = " Flipdot 84x7";
     flipdot_setstring_84x7(&d, shallo, sizeof(shallo));
     flipdot_set_84x7(&d);
-#endif
+    timer_sleep(200000);
+
+    for(int i = 0; i < 4; ++i)
+    {
+    	flipdot_wipe_84x7(0);
+		timer_sleep(100000);
+		flipdot_wipe_84x7(1);
+		timer_sleep(100000);
+    }
 
 #ifdef CFG_TYPE_FLIPDOT_112X16
     flipdot_wipe_112x16(0);
@@ -41,45 +47,70 @@ void flipdotClockInit()
     timer_sleep(400000);
 }
 
-void flipdotClockShowTime(uint32_t t)
+void flipdotclockStoreMode( const flipdotclockMode_t m )
 {
-    struct tm ts = {0};
-    ts = *gmtime(&t);
+	/* Allow access to FLASH Domain */
+    FLASH_Unlock();
 
-#ifdef CFG_TYPE_FLIPDOT_84X7
+    /* Write to the FLASH Domain */
+	EE_WriteVariable(CFG_EEPROM_NIXIE_MODE, (uint16_t)m);
+
+	/* Deny access to FLASH Domain */
+	FLASH_Lock();
+}
+
+flipdotclockMode_t flipdotclockLoadMode()
+{
+	uint16_t m;
+	EE_ReadVariable(CFG_EEPROM_NIXIE_MODE, (uint16_t*)&m);
+	return FLIPDOTCLOCK_MODE_ddmmHHMM; //Quickfix
+}
+
+void flipdotclockSetMode( const flipdotclockMode_t m )
+{
+	flipdotclockMode = m;
+}
+
+flipdotclockMode_t flipdotclockGetMode( void )
+{
+    return flipdotclockMode;
+}
+
+void flipdotClockShowTime(rtcTime_t t)
+{
+
     char buffer[14] = {0};
 
-    switch(flipdotClockMode)
+    switch(flipdotclockMode)
     {
-    case fclock_mode_carp:
-        sprintf(buffer, "%2d.%s. %02d:%02d", ts.tm_mday, (uint8_t*)month[ts.tm_mon], ts.tm_hour, ts.tm_min);
+    case FLIPDOTCLOCK_MODE_ddmmHHMM:
+        sprintf(buffer, "%2d.%s. %02d:%02d", t.days, (uint8_t*)month[t.months-1], t.hours, t.minutes);
         break;
-    case fclock_mode_bass:
-        sprintf(buffer, "%s. %02d:%02d:%02d", (uint8_t*)wdays[ts.tm_wday], ts.tm_hour, ts.tm_min, ts.tm_sec);
+    case FLIPDOTCLOCK_MODE_ddHHMMSS:
+        sprintf(buffer, "%s. %02d:%02d:%02d", (uint8_t*)wdays[t.weekdays], t.hours, t.minutes, t.seconds);
         break;
-    case fclock_mode_catfish:
-        if(ts.tm_sec % 20 > 10)
+    case FLIPDOTCLOCK_MODE_ddmmyyyy:
+        if(t.seconds % 20 > 10)
         {
-            sprintf(buffer, "%2d.%s.  %04d", ts.tm_mday, (uint8_t*)month[ts.tm_mon], ts.tm_year + 1900);
+            sprintf(buffer, "%2d.%s.  %04d", t.days, (uint8_t*)month[t.months-1], t.years + 1900);
         }
         else
         {
-            sprintf(buffer, "%s.  %02d:%02d:%02d", (uint8_t*)wdays[ts.tm_wday], ts.tm_hour, ts.tm_min, ts.tm_sec);
+            sprintf(buffer, "%s.  %02d:%02d:%02d", (uint8_t*)wdays[t.weekdays], t.hours, t.minutes, t.seconds);
         }
+        break;
+    default:
         break;
     }
 
-    if(flipdotClockMode != fclock_mode_inactive)
+
+    if(flipdotclockMode != FLIPDOTCLOCK_MODE_NONE)
     {
         fdisp_84x7_t d;
         flipdot_setstring_84x7(&d, (uint8_t*)buffer, sizeof(buffer));
         flipdot_set_84x7(&d);
     }
-#endif
 
-#ifdef CFG_TYPE_FLIPDOT_112X16
-
-#endif
 }
 
 #endif // CFG_TYPE_FLIPDOT
