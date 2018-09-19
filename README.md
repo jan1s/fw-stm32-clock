@@ -66,7 +66,10 @@ Most common Daylight Saving Time rules:
 |               | MESZ | UTC+2  | October | last | Sunday      | 1    |
 | Europe/Athens | EET  | UTC+2  | March   | last | Sunday      | 1    |
 |               | EEST | UTC+3  | October | last | Sunday      | 1    |
+| Europe/Damascus | OEZ  | UTC+2  | March | last | Friday      | 0    |
+|               | OESZ | UTC+3  | October | last | Friday      | 0    |
 | Europe/Moscow | MSK  | UTC+4  |         |      |             |      |
+
 
 ### Setting display board specifics
 
