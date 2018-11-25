@@ -1,8 +1,8 @@
 #include "platform_config.h"
 
-#ifdef CFG_FLIPDOT
+#ifdef CFG_FLIP_BUS
 
-#include "flipdot/flipdot.h"
+#include "flip_bus/flip_bus.h"
 #include "timer.h"
 #include <string.h>
 

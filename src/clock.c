@@ -2,9 +2,14 @@
 
 #include "clock.h"
 
-#ifdef CFG_FLIPDOT
-#include "flipdot/flipdot.h"
-#include "flipdot/flipdot_clock.h"
+#ifdef CFG_FLIP_BUS
+#include "flip_bus/flip_bus.h"
+#include "flip_bus/flip_bus_clock.h"
+#endif
+
+#ifdef CFG_FLIP_BROSE
+#include "flip_brose/flip_brose.h"
+#include "flip_brose/flip_brose_clock.h"
 #endif
 
 #ifdef CFG_NIXIE
@@ -91,7 +96,12 @@ void clockInit()
     lastEpoch = rtcGet();
     clockSource = clockLoadSource();
 
-#ifdef CFG_FLIPDOT
+#ifdef CFG_FLIP_BUS
+    flipdot_init();
+    flipdotClockInit();
+#endif
+
+#ifdef CFG_FLIP_BROSE
     flipdot_init();
     flipdotClockInit();
 #endif
@@ -149,7 +159,11 @@ void clockPoll()
         rtcCreateTimeFromEpoch( epoch, &utc );
         tzUTCToLocal( &utc, &local );
 
-#ifdef CFG_FLIPDOT
+#ifdef CFG_FLIP_BUS
+        flipdotClockShowTime(local);
+#endif
+
+#ifdef CFG_FLIP_BROSE
         flipdotClockShowTime(local);
 #endif
 

@@ -1,9 +1,9 @@
 #include "platform_config.h"
 
-#ifdef CFG_FLIPDOT
+#ifdef CFG_FLIP_BUS
 
-#include "flipdot/flipdot.h"
-#include "flipdot/flipdot_clock.h"
+#include "flip_bus/flip_bus.h"
+#include "flip_bus/flip_bus_clock.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -113,6 +113,6 @@ void flipdotClockShowTime(rtcTime_t t)
 
 }
 
-#endif // CFG_TYPE_FLIPDOT
+#endif // CFG_FLIP_BUS
 
 // ----------------------------------------------------------------------------

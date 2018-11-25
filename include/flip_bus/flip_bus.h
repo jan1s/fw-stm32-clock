@@ -1,10 +1,10 @@
-#ifndef FLIPDOT_H_
-#define FLIPDOT_H_
+#ifndef FLIP_BUS_H_
+#define FLIP_BUS_H_
 
 #include "platform_config.h"
 #include <stddef.h>
 
-#ifdef CFG_FLIPDOT
+#ifdef CFG_FLIP_BUS
 
 
 void flipdot_init(void);
@@ -33,6 +33,6 @@ void flipdot_set_112x16(const fdisp_112x16_t *d);
 void flipdot_setstring_112x16(fdisp_112x16_t *d, uint8_t *s, size_t slen);
 #endif // CFG_TYPE_FLIPDOT_112X16
 
-#endif // CFG_FLIPDOT
+#endif // CFG_FLIP_BUS
 
-#endif // FLIPDOT_H_
+#endif // FLIP_BUS_H_

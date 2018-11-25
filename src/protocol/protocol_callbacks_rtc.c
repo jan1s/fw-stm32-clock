@@ -3,7 +3,8 @@
 #include "protocol/protocol.h"
 
 #include "led.h"
-#include "flipdot/flipdot.h"
+#include "flip_bus/flip_bus.h"
+#include "flip_brose/flip_brose.h"
 #include "rtc/rtc.h"
 #include "rtc/tz.h"
 

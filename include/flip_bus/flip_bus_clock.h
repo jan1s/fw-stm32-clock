@@ -1,8 +1,10 @@
-#ifndef FLIPDOT_CLOCK_H_
-#define FLIPDOT_CLOCK_H_
+#ifndef FLIP_BUS_CLOCK_H_
+#define FLIP_BUS_CLOCK_H_
 
 #include "platform_config.h"
 #include "rtc/rtc_functions.h"
+
+#ifdef CFG_FLIP_BUS
 
 typedef enum
 {
@@ -22,5 +24,7 @@ void flipdotclockStoreMode( const flipdotclockMode_t m );
 flipdotclockMode_t flipdotclockLoadMode();
 void flipdotclockSetMode( const flipdotclockMode_t m );
 flipdotclockMode_t fliptdotclockGetMode( void );
+
+#endif // CFG_FLIP_BUS
 
 #endif // FLIPDOT_CLOCK_H_
