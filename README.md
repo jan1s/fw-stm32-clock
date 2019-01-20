@@ -33,7 +33,7 @@ You can access that in multiple ways. I prefer using `screen`.
 
 `screen /dev/tty.SLAB_USBtoUART 115200`
 
-The clock-specific commands are listed below. Find the the [Nixieclock][nixieclock], the [Flipdot][flipdot] and [Wordclock][wordclock] specific commands in theirs repositories.
+The clock-specific commands are listed below. Find the [Nixieclock][nixieclock], the [Flipdot][flipdot] and [Wordclock][wordclock] specific commands in theirs repositories.
 
 ### Setting the time ###
 
