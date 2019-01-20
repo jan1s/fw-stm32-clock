@@ -29,6 +29,11 @@ If a custom build is required or the code needs to be changed a standard [STM32 
 ## Commandline Interface ##
 
 The clock offers a commandline interface over a serial port.
+You can access that in multiple ways. I prefer using `screen`.
+
+`screen /dev/tty.SLAB_USBtoUART 115200`
+
+The clock-specific commands are listed below. Find the the [Nixieclock][nixieclock], the [Flipdot][flipdot] and [Wordclock][wordclock] specific commands in theirs repositories.
 
 ### Setting the time ###
 
