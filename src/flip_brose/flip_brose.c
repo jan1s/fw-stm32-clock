@@ -85,6 +85,7 @@ void flipdot_init()
 }
 
 fdisp_21x13_t flipdotState21x13;
+fdisp_28x16_t flipdotState28x16;
 
 void flipdot_wipe_21x13(uint8_t dir)
 {
@@ -122,6 +123,43 @@ void flipdot_set_21x13(const fdisp_21x13_t *d)
         }
     }
     flipdotState21x13 = *d;
+}
+
+void flipdot_wipe_28x16(uint8_t dir)
+{
+    for(uint8_t col = 0; col < 28; ++col)
+    {
+        for(uint8_t row = 0; row < 16; ++row)
+        {
+            flipdot_flip(row, col, dir);
+        }
+    }
+
+    if(dir == 0)
+    {
+        memset(&flipdotState28x16, 0, sizeof(fdisp_28x16_t));
+    }
+    else
+    {
+        memset(&flipdotState28x16, 0xff, sizeof(fdisp_28x16_t));
+    }
+}
+
+void flipdot_set_28x16(const fdisp_28x16_t *d)
+{
+    for(uint8_t col = 0; col < 28; ++col)
+    {
+        for(uint8_t row = 0; row < 16; ++row)
+        {
+            uint8_t dir = (d->cols[col] & (1 << row)) >> row;
+            uint8_t dir_state = (flipdotState28x16.cols[col] & (1 << row)) >> row;
+            if(dir != dir_state)
+            {
+                flipdot_flip(row, col, dir);
+            }
+        }
+    }
+    flipdotState28x16 = *d;
 }
 
 

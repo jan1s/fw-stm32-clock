@@ -24,9 +24,9 @@ void flipdotClockInit()
 
     for(int i = 0; i < 3; ++i)
     {
-    	flipdot_wipe_21x13(0);
+    	flipdot_wipe_28x16(0);
 		timer_sleep(80000);
-		flipdot_wipe_21x13(1);
+		flipdot_wipe_28x16(1);
 		timer_sleep(80000);
     }
 
@@ -74,18 +74,18 @@ void flipdotClockShowTime(rtcTime_t t)
 		{
 			char buffer[4] = {0};
 			sprintf(buffer, "%02d%02d", t.hours, t.minutes);
-			fdisp_21x13_t d = {0};
-			flipdot_setstring_HHMM_21x13(&d, (uint8_t*)buffer, sizeof(buffer));
-			flipdot_set_21x13(&d);
+			fdisp_28x16_t d = {0};
+			flipdot_setstring_HHMM_28x16(&d, (uint8_t*)buffer, sizeof(buffer));
+			flipdot_set_28x16(&d);
 		}
         break;
     case FLIPDOTCLOCK_MODE_HHMMddmm:
     	{
 			char buffer[8] = {0};
 			sprintf(buffer, "%02d%02d%02d%02d", t.hours, t.minutes, t.days, t.months);
-			fdisp_21x13_t d = {0};
-			flipdot_setstring_HHMMddmm_21x13(&d, (uint8_t*)buffer, sizeof(buffer));
-			flipdot_set_21x13(&d);
+			fdisp_28x16_t d = {0};
+			flipdot_setstring_HHMMddmm_28x16(&d, (uint8_t*)buffer, sizeof(buffer));
+			flipdot_set_28x16(&d);
     	}
     	break;
 
