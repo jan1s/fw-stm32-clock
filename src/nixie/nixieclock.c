@@ -6,6 +6,7 @@
 #include "nixie/nixieclock.h"
 #include "rtc/rtc.h"
 #include "rtc/rtc_functions.h"
+#include "timer.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -138,6 +139,58 @@ void nixieclockShowTime(rtcTime_t t)
             d.dots[1] = t.seconds % 2;
             d.dots[0] = t.seconds % 2;
             nixieDisplay6t(&d);
+        }
+        break;
+
+    default:
+        break;
+    }
+}
+
+
+void nixieclockSaveTubes()
+{
+    switch(nixieclockMode)
+    {
+    case NIXIECLOCK_MODE_NONE:
+    case NIXIECLOCK_MODE_HHMM:
+    case NIXIECLOCK_MODE_MMSS:
+    case NIXIECLOCK_MODE_YYYY:
+    {
+    	nixieDisplay4t_t display;
+    	for(uint8_t j = 0; j < 10; j++)
+    	{
+			for(uint8_t i = 0; i < 10; i++)
+			{
+			  display.digits[0] = i;
+			  display.digits[1] = i;
+			  display.digits[2] = i;
+			  display.digits[3] = i;
+			  nixieDisplay4t( &display );
+			  timer_sleep(10000);
+			}
+		}
+    }
+    break;
+
+    case NIXIECLOCK_MODE_HHMMSS:
+    case NIXIECLOCK_MODE_HHMMSS_R:
+        {
+        	nixieDisplay6t_t display;
+        	for(uint8_t j = 0; j < 10; j++)
+        	{
+				for(uint8_t i = 0; i < 10; i++)
+				{
+				  display.digits[0] = i;
+				  display.digits[1] = i;
+				  display.digits[2] = i;
+				  display.digits[3] = i;
+				  display.digits[4] = i;
+				  display.digits[5] = i;
+				  nixieDisplay6t( &display );
+				  timer_sleep(10000);
+				}
+        	}
         }
         break;
 

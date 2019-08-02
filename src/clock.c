@@ -169,6 +169,12 @@ void clockPoll()
 
 #ifdef CFG_NIXIE
         nixieclockShowTime(local);
+
+        uint32_t lepoch = rtcToEpochTime( &local );
+        if(lepoch % 86400 == 0)
+        {
+        	nixieclockSaveTubes();
+        }
 #endif
     }
 }
