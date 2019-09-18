@@ -16,10 +16,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* Virtual address of EEPROM emulated variables */
-/* Check in stm32f10x_eeprom.h for the NumbOfVar
- * and in platform_config.h for the actual definitions */
-uint8_t NumbOfVar = 0x05;
-uint16_t VirtAddVarTab[0x05] =
+/* Check platform_config.h for the actual definitions */
+uint8_t NumbOfVar = 0x06;
+uint16_t VirtAddVarTab[0x06] =
 {
     CFG_EEPROM_TZ_STD,
     CFG_EEPROM_TZ_DST,

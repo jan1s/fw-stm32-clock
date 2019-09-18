@@ -56,7 +56,7 @@ void cmd_clock_set_source(cli_select_t t, uint8_t argc, char **argv)
     /* Make sure values are valid */
     if ((source < 0) || (source >= CLOCK_SOURCE_END))
     {
-      print("%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
+      print(cli_send[t], "%s: %s%s", "ERROR", "range", CFG_PRINTF_NEWLINE);
       return;
     }
 
@@ -70,7 +70,7 @@ void cmd_clock_set_source(cli_select_t t, uint8_t argc, char **argv)
 void cmd_clock_get_source(cli_select_t t, uint8_t argc, char **argv)
 {
 	clockSource_t s = clockGetSource();
-    print("%s: %02d%s", "SOURCE", s, CFG_PRINTF_NEWLINE);
+    print(cli_send[t], "%s: %02d%s", "SOURCE", s, CFG_PRINTF_NEWLINE);
 }
 
 void cmd_clock_set_nightmode(cli_select_t t, uint8_t argc, char **argv)

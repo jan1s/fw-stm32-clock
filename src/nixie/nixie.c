@@ -156,7 +156,6 @@ void nixieDisplay6t( nixieDisplay6t_t *d )
     uint8_t outBuf[] = {0, 0, 0, 0, 0, 0, 0, 0};
     uint8_t outBufCount = 0;
     uint8_t outBufBitCount = 0;
-    uint8_t outBufBitMask = 0x80;
 
     //Do thing for each digit
 	for(uint8_t digitCount = 0; digitCount < 6; ++digitCount)

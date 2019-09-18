@@ -106,7 +106,7 @@ void clockStoreNightmode( const nightModeRule_t m )
 nightModeRule_t clockLoadNightmode()
 {
     nightModeRule_t m;
-    uint8_t mask;
+    uint16_t mask;
     uint16_t start;
     uint16_t end;
 
