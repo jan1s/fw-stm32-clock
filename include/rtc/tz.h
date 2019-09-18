@@ -13,7 +13,6 @@ typedef enum
     TZ_WEEK_FOURTH
 } tzWeek_t;
 
-
 typedef struct tzRule_st
 {
     uint8_t hour;

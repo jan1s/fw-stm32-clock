@@ -18,11 +18,13 @@
 /* Virtual address of EEPROM emulated variables */
 /* Check in stm32f10x_eeprom.h for the NumbOfVar
  * and in platform_config.h for the actual definitions */
-uint16_t VirtAddVarTab[NumbOfVar] =
+uint8_t NumbOfVar = 0x05;
+uint16_t VirtAddVarTab[0x05] =
 {
     CFG_EEPROM_TZ_STD,
     CFG_EEPROM_TZ_DST,
     CFG_EEPROM_CLOCK_SRC,
+	CFG_EEPROM_CLOCK_NM,
     CFG_EEPROM_NIXIE_TYPE,
     CFG_EEPROM_NIXIE_MODE
 };

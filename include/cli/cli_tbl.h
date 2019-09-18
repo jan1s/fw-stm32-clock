@@ -59,6 +59,8 @@ void cmd_tz_write(cli_select_t t, uint8_t argc, char **argv);
 
 void cmd_clock_set_source(cli_select_t t, uint8_t argc, char **argv);
 void cmd_clock_get_source(cli_select_t t, uint8_t argc, char **argv);
+void cmd_clock_set_nightmode(cli_select_t t, uint8_t argc, char **argv);
+void cmd_clock_get_nightmode(cli_select_t t, uint8_t argc, char **argv);
 
 #ifdef CFG_NIXIE
 void cmd_nixie_test(cli_select_t t, uint8_t argc, char **argv);
@@ -97,6 +99,8 @@ cli_t cli_tbl[] =
     { "tz_write",          6,  6,  0, cmd_tz_write                               , "TZ write"                          , "'tz_write (std|dst) <offset> <hour> <dow> <week> <month>'" },
     { "clk_setsrc",        1,  1,  0, cmd_clock_set_source                       , "Clock set source"                  , "'clk_setsrc <source(0=NONE|1=DCF77|2=GPS)>'" },
     { "clk_getsrc",        0,  0,  0, cmd_clock_get_source                       , "Clock get source"                  , CMD_NOPARAMS },
+    { "clk_setnm",         5,  5,  0, cmd_clock_set_nightmode                    , "Clock set night mode"              , "'clk_setnm <dayMask> <startHour> <startMinute> <endHour> <endMinute>'" },
+    { "clk_getnm",         0,  0,  0, cmd_clock_get_nightmode                    , "Clock get night mode"              , CMD_NOPARAMS },
 #ifdef CFG_NIXIE
     { "nixie_test",        0,  1,  0, cmd_nixie_test                             , "Nixie test"                        , CMD_NOPARAMS },
     { "nixie_settype",     1,  1,  0, cmd_nixie_set_type                         , "Nixie set type"                    , "'nixie_settype <type(0-4)>'" },

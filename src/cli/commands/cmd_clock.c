@@ -72,3 +72,58 @@ void cmd_clock_get_source(cli_select_t t, uint8_t argc, char **argv)
 	clockSource_t s = clockGetSource();
     print("%s: %02d%s", "SOURCE", s, CFG_PRINTF_NEWLINE);
 }
+
+void cmd_clock_set_nightmode(cli_select_t t, uint8_t argc, char **argv)
+{
+    char* end;
+    int32_t mask = strtol(argv[0], &end, 10);
+    int32_t startHour = strtol(argv[1], &end, 10);
+    int32_t startMinute = strtol(argv[2], &end, 10);
+    int32_t endHour = strtol(argv[3], &end, 10);
+    int32_t endMinute = strtol(argv[4], &end, 10);
+
+    /* Make sure values are valid */
+    if ((mask < 0) || (mask > 0x7f))
+    {
+      print(cli_send[t], "%s%s", "Mask must be between 0 and 0x7f", CFG_PRINTF_NEWLINE);
+      return;
+    }
+    if ((startHour < 0) || (startHour > 23))
+    {
+        print(cli_send[t], "%s%s", "Start hour must be between 0 and 23", CFG_PRINTF_NEWLINE);
+        return;
+    }
+    if ((startMinute < 0) || (startMinute > 59))
+    {
+        print(cli_send[t], "%s%s", "Start minute must be between 0 and 59", CFG_PRINTF_NEWLINE);
+        return;
+    }
+    if ((endHour < 0) || (endHour > 23))
+    {
+        print(cli_send[t], "%s%s", "End hour must be between 0 and 23", CFG_PRINTF_NEWLINE);
+        return;
+    }
+    if ((endMinute < 0) || (endMinute > 59))
+    {
+        print(cli_send[t], "%s%s", "End minute must be between 0 and 59", CFG_PRINTF_NEWLINE);
+        return;
+    }
+
+    nightModeRule_t m;
+    m.dayMask = mask;
+    m.startHour = startHour;
+    m.startMinute = startMinute;
+    m.endHour = endHour;
+    m.endMinute = endMinute;
+
+    clockStoreNightmode(m);
+    clockSetNightmode(m);
+
+    print(cli_send[t], "%s%s", "OK", CFG_PRINTF_NEWLINE);
+}
+
+void cmd_clock_get_nightmode(cli_select_t t, uint8_t argc, char **argv)
+{
+    nightModeRule_t m = clockGetNightmode();
+    print(cli_send[t], "%02x %02d %02d %02d %02d%s", m.dayMask, m.startHour, m.startMinute, m.endHour, m.endMinute, CFG_PRINTF_NEWLINE);
+}

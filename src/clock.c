@@ -25,24 +25,25 @@
 static uint32_t lastEpoch = 0;
 
 clockSource_t clockSource;
+nightModeRule_t nightMode;
 
 void clockStoreSource( const clockSource_t s )
 {
-	/* Allow access to FLASH Domain */
-	FLASH_Unlock();
+    /* Allow access to FLASH Domain */
+    FLASH_Unlock();
 
-	/* Write to the FLASH Domain */
-	EE_WriteVariable(CFG_EEPROM_CLOCK_SRC, (uint16_t)s);
+    /* Write to the FLASH Domain */
+    EE_WriteVariable(CFG_EEPROM_CLOCK_SRC, (uint16_t)s);
 
-	/* Deny access to FLASH Domain */
-	FLASH_Lock();
+    /* Deny access to FLASH Domain */
+    FLASH_Lock();
 }
 
 clockSource_t clockLoadSource()
 {
-	uint16_t s;
-	EE_ReadVariable(CFG_EEPROM_CLOCK_SRC, (uint16_t*)&s);
-	return s;
+    uint16_t s;
+    EE_ReadVariable(CFG_EEPROM_CLOCK_SRC, (uint16_t*)&s);
+    return s;
 }
 
 void clockSetSource( const clockSource_t s )
@@ -88,6 +89,49 @@ clockSource_t clockGetSource( void )
     return clockSource;
 }
 
+void clockStoreNightmode( const nightModeRule_t m )
+{
+    /* Allow access to FLASH Domain */
+    FLASH_Unlock();
+
+    /* Write to the FLASH Domain */
+    EE_WriteVariable(CFG_EEPROM_CLOCK_NM + 0, (uint16_t)m.dayMask);
+    EE_WriteVariable(CFG_EEPROM_CLOCK_NM + 1, (uint16_t)((m.startHour << 8) + m.startMinute));
+    EE_WriteVariable(CFG_EEPROM_CLOCK_NM + 2, (uint16_t)((m.endHour << 8) + m.endMinute));
+
+    /* Deny access to FLASH Domain */
+    FLASH_Lock();
+}
+
+nightModeRule_t clockLoadNightmode()
+{
+    nightModeRule_t m;
+    uint8_t mask;
+    uint16_t start;
+    uint16_t end;
+
+    EE_ReadVariable(CFG_EEPROM_CLOCK_NM + 0, &mask);
+    EE_ReadVariable(CFG_EEPROM_CLOCK_NM + 1, &start);
+    EE_ReadVariable(CFG_EEPROM_CLOCK_NM + 2, &end);
+
+    m.dayMask = mask;
+    m.startHour = start >> 8;
+    m.startMinute = start & 0xFF;
+    m.endHour = end >> 8;
+    m.endMinute = end & 0xFF;
+    return m;
+}
+
+void clockSetNightmode( const nightModeRule_t m )
+{
+    nightMode = m;
+}
+
+nightModeRule_t clockGetNightmode( void )
+{
+    return nightMode;
+}
+
 
 void clockInit()
 {
@@ -95,6 +139,7 @@ void clockInit()
     tzInit();
     lastEpoch = rtcGet();
     clockSource = clockLoadSource();
+    nightMode = clockLoadNightmode();
 
 #ifdef CFG_FLIP_BUS
     flipdot_init();
@@ -173,7 +218,7 @@ void clockPoll()
         uint32_t lepoch = rtcToEpochTime( &local );
         if(lepoch % 86400 == 0)
         {
-        	nixieclockSaveTubes();
+            nixieclockSaveTubes();
         }
 #endif
     }

@@ -1,6 +1,10 @@
+#ifndef __NIXIE_MAPPING_H__
+#define __NIXIE_MAPPING_H__
+
 #include "platform_config.h"
 
 #ifdef CFG_NIXIE
+
 #include "nixie/nixie.h"
 
 /*
@@ -178,3 +182,5 @@ const uint16_t digitMap[8][11] =
 };
 
 #endif
+
+#endif // __NIXIE_MAPPING_H__

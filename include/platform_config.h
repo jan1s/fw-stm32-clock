@@ -22,7 +22,7 @@
     000x  . . . . . . . . . . . . . . . .
     001x  x x x x x x . . . . . . . . . .   Timezone STD
     002x  x x x x x x . . . . . . . . . .   Timezone DST
-    003x  x . . . . . . . . . . . . . . .   Clock Source
+    003x  x . x . . . . . . . . . . . . .   Clock Source / Nightmode
     004x  x x x x . . . . . . . . . . . .   Nixie Type/Mode
     005x  . . . . . . . . . . . . . . . .
     006x  . . . . . . . . . . . . . . . .
@@ -41,6 +41,7 @@
 #define CFG_EEPROM_TZ_STD       (uint16_t)0x0010
 #define CFG_EEPROM_TZ_DST       (uint16_t)0x0020
 #define CFG_EEPROM_CLOCK_SRC    (uint16_t)0x0030
+#define CFG_EEPROM_CLOCK_NM     (uint16_t)0x0032
 #define CFG_EEPROM_NIXIE_TYPE   (uint16_t)0x0040
 #define CFG_EEPROM_NIXIE_MODE   (uint16_t)0x0042
 /*=========================================================================*/
