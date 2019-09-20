@@ -145,7 +145,7 @@ uint8_t clockIsNightmode ( rtcTime_t t )
 
 		uint32_t now = t.hours * 60 + t.minutes;
 
-		if ( (start <= now) && (now <= end) )
+		if ( (start <= now) && (now < end) )
 		{
 			return 1;
 		}
