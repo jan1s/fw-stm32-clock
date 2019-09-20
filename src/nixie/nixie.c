@@ -106,7 +106,7 @@ void nixieDisplay4t( nixieDisplay4t_t *d )
     //Do thing for each digit
     for(uint8_t digitCount = 0; digitCount < 4; ++digitCount)
     {
-        // catch seperation dots
+        // catch separation dots
         // nicer way would be nice
         if( digitCount == 2)
         {
@@ -160,7 +160,7 @@ void nixieDisplay6t( nixieDisplay6t_t *d )
     //Do thing for each digit
 	for(uint8_t digitCount = 0; digitCount < 6; ++digitCount)
 	{
-		// catch seperation dots
+		// catch separation dots
 		// nicer way would be nice
 		if( digitCount == 2)
 		{

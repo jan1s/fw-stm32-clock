@@ -19,7 +19,17 @@ void nixieclockInit()
     nixieclockMode = nixieclockLoadMode();
 
     nixieInit();
-    nixieHighVoltageEnable();
+    nixieHighVoltageDisable();
+}
+
+void nixieclockTurnOn()
+{
+	nixieHighVoltageEnable();
+}
+
+void nixieclockTurnOff()
+{
+	nixieHighVoltageDisable();
 }
 
 void nixieclockStoreMode( const nixieclockMode_t m )

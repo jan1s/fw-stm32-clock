@@ -23,6 +23,9 @@ void nixieclockInit(void);
 void nixieclockShowTime(rtcTime_t t);
 void nixieclockSaveTubes();
 
+void nixieclockTurnOn();
+void nixieclockTurnOff();
+
 void nixieclockStoreMode( const nixieclockMode_t m );
 nixieclockMode_t nixieclockLoadMode();
 void nixieclockSetMode( const nixieclockMode_t m );

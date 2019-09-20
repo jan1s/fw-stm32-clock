@@ -132,6 +132,28 @@ nightModeRule_t clockGetNightmode( void )
     return nightMode;
 }
 
+uint8_t clockIsNightmode ( rtcTime_t t )
+{
+	if (1 << t.weekdays & nightMode.dayMask)
+	{
+		uint32_t start = nightMode.startHour * 60 + nightMode.startMinute;
+		uint32_t end = nightMode.endHour * 60 + nightMode.endMinute;
+		if (start > end)
+		{
+			end = end + 24 * 60;
+		}
+
+		uint32_t now = t.hours * 60 + t.minutes;
+
+		if ( (start <= now) && (now <= end) )
+		{
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 
 void clockInit()
 {
@@ -214,11 +236,13 @@ void clockPoll()
 
 #ifdef CFG_NIXIE
         nixieclockShowTime(local);
-
-        uint32_t lepoch = rtcToEpochTime( &local );
-        if(lepoch % 86400 == 0)
+        if (clockIsNightmode(local))
         {
-            nixieclockSaveTubes();
+        	nixieclockTurnOff();
+        }
+        else
+        {
+        	nixieclockTurnOn();
         }
 #endif
     }

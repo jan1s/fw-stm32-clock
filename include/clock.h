@@ -2,6 +2,7 @@
 #define __CLOCK_H__
 
 #include "platform_config.h"
+#include "rtc/rtc_functions.h"
 
 typedef enum
 {
@@ -33,5 +34,6 @@ void clockSetNightmode( const nightModeRule_t s );
 void clockStoreNightmode( const nightModeRule_t s );
 nightModeRule_t clockLoadNightmode( void );
 nightModeRule_t clockGetNightmode( void );
+uint8_t clockIsNightmode ( rtcTime_t t );
 
 #endif
