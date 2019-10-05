@@ -138,16 +138,23 @@ uint8_t clockIsNightmode ( rtcTime_t t )
 	{
 		uint32_t start = nightMode.startHour * 60 + nightMode.startMinute;
 		uint32_t end = nightMode.endHour * 60 + nightMode.endMinute;
-		if (start > end)
-		{
-			end = end + 24 * 60;
-		}
 
 		uint32_t now = t.hours * 60 + t.minutes;
 
-		if ( (start <= now) && (now < end) )
+		// Check if nightmode goes over midnight
+		if (start > end)
 		{
-			return 1;
+			if ( (start <= now) || (now < end) )
+			{
+				return 1;
+			}
+		}
+		else
+		{
+			if ( (start <= now) && (now < end) )
+			{
+				return 1;
+			}
 		}
 	}
 
